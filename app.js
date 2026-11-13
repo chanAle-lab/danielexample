@@ -14,12 +14,15 @@ class AbrsmApp {
   }
 
   init() {
-    // 1. Initialize Musical Stave Engine
-    this.stave = new MusicalStave('main-stave-container', {
-      clef: this.currentClef,
-      notes: [{ pitch: 'C', octave: 4, accidental: null }] // Middle C
-    });
-    window.staveEngine = this;
+    // 1. Initialize Musical Stave Engine if container present
+    const staveContainer = document.getElementById('main-stave-container');
+    if (staveContainer) {
+      this.stave = new MusicalStave('main-stave-container', {
+        clef: this.currentClef,
+        notes: [{ pitch: 'C', octave: 4, accidental: null }] // Middle C
+      });
+      window.staveEngine = this;
+    }
 
     // 2. Initialize Interactive Piano Keyboard
     this.piano = new InteractivePiano('main-piano-container', {

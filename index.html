@@ -25,7 +25,6 @@
     <nav aria-label="Primary">
       <a href="#/syllabus" class="active" data-tab="syllabus">Syllabus (1–5)</a>
       <a href="#/flashcards" data-tab="flashcards">Flashcards</a>
-      <a href="#/stave" data-tab="stave-clefs">Stave & Clefs</a>
       <a href="#/cadences" data-tab="cadences">Cadences</a>
       <a href="#/terms" data-tab="terms">Terms & Ornaments</a>
       <a href="#/orchestra" data-tab="orchestra">Orchestra</a>
@@ -62,17 +61,15 @@
 
       <div class="hero-stave-card">
         <div class="hero-stave-title">
-          <span>Interactive Stave & Middle C</span>
-          <span style="color: var(--color-accent); font-weight: 700;">Live Audio</span>
+          <span>Note Flashcards & Audio</span>
+          <span style="color: var(--color-accent); font-weight: 700;">Grand Staff</span>
         </div>
         <p style="font-size: var(--text-xs); color: var(--color-muted); margin-bottom: var(--space-3);">
-          Middle C (C4) as notated across the 4 clefs: Treble, Bass, Alto, and Tenor.
+          Interactive 3D flashcards featuring notes on the Grand Staff with audio playback and virtual piano guidance.
         </p>
         <div style="display: flex; gap: var(--space-2); margin-top: var(--space-2);">
-          <button class="btn outline small" onclick="window.app.setClef('treble')">𝄞 Treble</button>
-          <button class="btn outline small" onclick="window.app.setClef('bass')">𝄢 Bass</button>
-          <button class="btn outline small" onclick="window.app.setClef('alto')">𝄡 Alto (Gr 4)</button>
-          <button class="btn outline small" onclick="window.app.setClef('tenor')">𝄡 Tenor (Gr 5)</button>
+          <button class="btn primary small" onclick="window.app.switchTab('flashcards')">🃏 Study Flashcards</button>
+          <button class="btn outline small" onclick="window.app.switchTab('exam')">📝 Exam Trainer</button>
         </div>
       </div>
     </section>
@@ -89,31 +86,12 @@
       </div>
     </div>
 
-    <!-- Centerpiece: Stave & Virtual Piano -->
+    <!-- Interactive Virtual Piano -->
     <section class="interactive-centerpiece">
-      <div class="centerpiece-head">
+      <div class="centerpiece-head" style="margin-bottom: var(--space-3);">
         <div class="centerpiece-title">
-          <span>🎼</span> Musical Stave & Multi-Clef Reader
+          <span>🎹</span> Interactive Virtual Piano Keyboard
         </div>
-        <div class="clef-tabs">
-          <button class="clef-tab-btn active" data-clef="grand">Grand Staff (Both)</button>
-          <button class="clef-tab-btn" data-clef="treble">Treble (G)</button>
-          <button class="clef-tab-btn" data-clef="bass">Bass (F)</button>
-          <button class="clef-tab-btn" data-clef="alto">Alto (C - Gr 4)</button>
-          <button class="clef-tab-btn" data-clef="tenor">Tenor (C - Gr 5)</button>
-        </div>
-      </div>
-
-      <!-- SVG Stave -->
-      <div class="stave-canvas-container">
-        <div id="main-stave-container"></div>
-      </div>
-
-      <!-- Virtual Piano -->
-      <div class="centerpiece-head" style="margin-top: var(--space-4); margin-bottom: var(--space-2);">
-        <span style="font-size: var(--text-xs); color: var(--color-muted); text-transform: uppercase; letter-spacing: .06em;">
-          🎹 Virtual Piano (Press keys to place note on Stave & hear pitch)
-        </span>
         <button class="btn outline small" onclick="window.mainPiano.clearHighlights()">Clear Highlights</button>
       </div>
       <div class="piano-wrapper">
@@ -209,64 +187,6 @@
           <button class="btn outline small" style="color: var(--color-accent); border-color: rgba(184, 67, 47, 0.4);" onclick="window.flashcardsEngine.markReview();">
             ↺ Review Again (<span id="flashcard-review-count">0</span>)
           </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 2: Stave & 4 Clefs Deep Dive -->
-    <section id="tab-stave-clefs" class="tab-view">
-      <div class="card-head">
-        <div>
-          <h2>The Four Clefs & Middle C</h2>
-          <p style="color: var(--color-muted); font-size: var(--text-sm); margin-top: var(--space-1);">
-            How pitches map across the four clefs required across ABRSM Grades 1 to 5.
-          </p>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="paper-card">
-          <div class="card-head">
-            <h3>1. Treble Clef (G Clef)</h3>
-            <span class="tag">Grade 1+</span>
-          </div>
-          <p style="font-size: var(--text-sm); color: var(--color-muted);">
-            The loop curls around <strong>line 2 (G4)</strong>. Middle C (C4) sits on the <strong>first ledger line below</strong> the stave.
-          </p>
-          <button class="btn outline small" style="margin-top: var(--space-4);" onclick="window.app.setClef('treble')">Inspect Treble Clef</button>
-        </div>
-
-        <div class="paper-card">
-          <div class="card-head">
-            <h3>2. Bass Clef (F Clef)</h3>
-            <span class="tag">Grade 1+</span>
-          </div>
-          <p style="font-size: var(--text-sm); color: var(--color-muted);">
-            The two dots enclose <strong>line 4 (F3)</strong>. Middle C (C4) sits on the <strong>first ledger line above</strong> the stave.
-          </p>
-          <button class="btn outline small" style="margin-top: var(--space-4);" onclick="window.app.setClef('bass')">Inspect Bass Clef</button>
-        </div>
-
-        <div class="paper-card">
-          <div class="card-head">
-            <h3>3. Alto Clef (C Clef)</h3>
-            <span class="tag">Grade 4+</span>
-          </div>
-          <p style="font-size: var(--text-sm); color: var(--color-muted);">
-            The center notch points precisely to <strong>line 3 (middle line)</strong> as Middle C (C4). The standard clef for the Viola.
-          </p>
-          <button class="btn outline small" style="margin-top: var(--space-4);" onclick="window.app.setClef('alto')">Inspect Alto Clef</button>
-        </div>
-
-        <div class="paper-card">
-          <div class="card-head">
-            <h3>4. Tenor Clef (C Clef)</h3>
-            <span class="tag">Grade 5+</span>
-          </div>
-          <p style="font-size: var(--text-sm); color: var(--color-muted);">
-            The center notch points to <strong>line 4</strong> as Middle C (C4). Used for the high registers of Cello, Bassoon, and Trombone.
-          </p>
-          <button class="btn outline small" style="margin-top: var(--space-4);" onclick="window.app.setClef('tenor')">Inspect Tenor Clef</button>
         </div>
       </div>
     </section>
