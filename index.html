@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MusicTheory101 — Step-by-Step Interactive Music Theory</title>
+  <meta name="description" content="An interactive, audio-enabled music theory learning platform. Master scales, chords, intervals, the Circle of Fifths, and ear training with real-time sound.">
+  
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="#" class="brand" onclick="window.app.switchTab('lessons'); return false;">
+        <span class="brand-icon">🎹</span>
+        <div>
+          <span class="brand-title">MusicTheory101</span>
+          <span class="brand-subtitle">Step-by-Step Interactive Theory</span>
+        </div>
+      </a>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs">
+        <button class="nav-tab-btn active" data-tab="lessons">
+          <span>📖</span> Lessons
+        </button>
+        <button class="nav-tab-btn" data-tab="circle">
+          <span>⭕</span> Circle of Fifths
+        </button>
+        <button class="nav-tab-btn" data-tab="tools">
+          <span>🛠️</span> Explorers & Tools
+        </button>
+        <button class="nav-tab-btn" data-tab="quiz">
+          <span>🎧</span> Ear Training
+        </button>
+      </nav>
+
+      <!-- Audio Controls -->
+      <div class="header-controls">
+        <div class="volume-control">
+          <button id="mute-btn" class="btn-icon" title="Toggle Mute">🔊</button>
+          <input type="range" id="master-volume" class="volume-slider" min="0" max="1" step="0.05" value="0.6" title="Volume">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Master Page Container -->
+  <main class="main-wrapper">
+
+    <!-- Sticky Piano Section (Available Across All Tabs) -->
+    <section class="sticky-piano-section">
+      <div class="piano-header">
+        <div class="piano-title">
+          <span>🎹</span> Interactive Piano Keyboard (Play with Click, Touch, or Computer Keys: A-K)
+        </div>
+        <div class="piano-controls">
+          <label for="piano-label-mode" style="color: var(--text-muted);">Labels:</label>
+          <select id="piano-label-mode" class="label-mode-selector">
+            <option value="pitch">Pitch Names (C, D, E...)</option>
+            <option value="keyboard">Computer Keys (A, W, S...)</option>
+            <option value="none">Blank</option>
+          </select>
+          <button id="clear-piano-btn" class="btn btn-sm btn-secondary">Clear Highlights</button>
+        </div>
+      </div>
+
+      <!-- Piano Keyboard Container -->
+      <div class="piano-keyboard-wrapper">
+        <div id="main-piano-container"></div>
+      </div>
+    </section>
+
+    <!-- TAB 1: Step-by-Step Lessons -->
+    <section id="tab-lessons" class="tab-view active">
+      <div class="lessons-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="lessons-sidebar">
+          <div class="sidebar-heading">Curriculum Modules</div>
+          <div class="lesson-list" id="lesson-nav-list">
+            <!-- Injected by app.js -->
+          </div>
+        </aside>
+
+        <!-- Lesson Content Area -->
+        <article class="lesson-content-card">
+          <div class="lesson-meta-header">
+            <span class="lesson-tag" id="lesson-current-tag">Fundamentals</span>
+            <div class="button-group">
+              <button id="prev-lesson-btn" class="btn btn-sm btn-secondary">← Previous</button>
+              <button id="next-lesson-btn" class="btn btn-sm btn-primary">Next Lesson →</button>
+            </div>
+          </div>
+          <div class="lesson-body" id="lesson-content-body">
+            <!-- Injected by app.js -->
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- TAB 2: Circle of Fifths -->
+    <section id="tab-circle" class="tab-view">
+      <div class="circle-view-header" style="margin-bottom: 1.5rem; text-align: center;">
+        <h2 style="font-family: var(--font-display); font-size: 2rem; color: #fff;">The Circle of Fifths</h2>
+        <p style="color: var(--text-secondary); max-width: 600px; margin: 0.5rem auto 0;">
+          Click any key on the wheel to inspect its sharps/flats, relative minor, diatonic chords, and chord progressions with real-time playback.
+        </p>
+      </div>
+      <div id="circle-of-fifths-container">
+        <!-- Injected by circle-of-fifths.js -->
+      </div>
+    </section>
+
+    <!-- TAB 3: Explorers & Tools (Scale, Chord, Metronome) -->
+    <section id="tab-tools" class="tab-view">
+      <div class="tools-grid">
+        <!-- Tool 1: Scale Explorer -->
+        <div class="tool-card">
+          <h3><span>🎼</span> Scale Explorer</h3>
+          <p class="tool-subtitle">Explore any scale formula, inspect notes, and hear them ascending.</p>
+
+          <div class="tool-form-group">
+            <label for="scale-root-select">Root Pitch:</label>
+            <select id="scale-root-select" class="form-select">
+              <option value="C">C</option>
+              <option value="C#">C♯ / D♭</option>
+              <option value="D">D</option>
+              <option value="D#">D♯ / E♭</option>
+              <option value="E">E</option>
+              <option value="F">F</option>
+              <option value="F#">F♯ / G♭</option>
+              <option value="G">G</option>
+              <option value="G#">G♯ / A♭</option>
+              <option value="A">A</option>
+              <option value="A#">A♯ / B♭</option>
+              <option value="B">B</option>
+            </select>
+          </div>
+
+          <div class="tool-form-group">
+            <label for="scale-type-select">Scale / Mode:</label>
+            <select id="scale-type-select" class="form-select">
+              <option value="major">Major (Ionian)</option>
+              <option value="minor">Natural Minor (Aeolian)</option>
+              <option value="harmonic_minor">Harmonic Minor</option>
+              <option value="melodic_minor">Melodic Minor</option>
+              <option value="dorian">Dorian Mode</option>
+              <option value="phrygian">Phrygian Mode</option>
+              <option value="lydian">Lydian Mode</option>
+              <option value="mixolydian">Mixolydian Mode</option>
+              <option value="pentatonic_major">Major Pentatonic</option>
+              <option value="pentatonic_minor">Minor Pentatonic</option>
+              <option value="blues">Blues Scale</option>
+            </select>
+          </div>
+
+          <div class="tool-result-display">
+            <strong style="font-size: 0.85rem; color: var(--text-secondary);">Scale Tones:</strong>
+            <div id="scale-notes-display" class="tool-result-notes"></div>
+          </div>
+
+          <button id="play-scale-btn" class="btn btn-primary" style="width: 100%;">
+            ▶ Play Scale Arpeggio
+          </button>
+        </div>
+
+        <!-- Tool 2: Chord Builder -->
+        <div class="tool-card">
+          <h3><span>🎹</span> Chord Builder</h3>
+          <p class="tool-subtitle">Build any triad, seventh chord, or inversion with immediate audio.</p>
+
+          <div class="tool-form-group">
+            <label for="chord-root-select">Root Pitch:</label>
+            <select id="chord-root-select" class="form-select">
+              <option value="C">C</option>
+              <option value="C#">C♯ / D♭</option>
+              <option value="D">D</option>
+              <option value="D#">D♯ / E♭</option>
+              <option value="E">E</option>
+              <option value="F">F</option>
+              <option value="F#">F♯ / G♭</option>
+              <option value="G">G</option>
+              <option value="G#">G♯ / A♭</option>
+              <option value="A">A</option>
+              <option value="A#">A♯ / B♭</option>
+              <option value="B">B</option>
+            </select>
+          </div>
+
+          <div class="tool-form-group">
+            <label for="chord-type-select">Chord Quality:</label>
+            <select id="chord-type-select" class="form-select">
+              <option value="major">Major Triad (1 - 3 - 5)</option>
+              <option value="minor">Minor Triad (1 - ♭3 - 5)</option>
+              <option value="diminished">Diminished Triad (1 - ♭3 - ♭5)</option>
+              <option value="augmented">Augmented Triad (1 - 3 - ♯5)</option>
+              <option value="dom7">Dominant 7th (1 - 3 - 5 - ♭7)</option>
+              <option value="maj7">Major 7th (1 - 3 - 5 - 7)</option>
+              <option value="min7">Minor 7th (1 - ♭3 - 5 - ♭7)</option>
+              <option value="m7b5">Half-Diminished (1 - ♭3 - ♭5 - ♭7)</option>
+              <option value="dim7">Diminished 7th (1 - ♭3 - ♭5 - 𝄫7)</option>
+              <option value="sus4">Sus4 (1 - 4 - 5)</option>
+              <option value="sus2">Sus2 (1 - 2 - 5)</option>
+            </select>
+          </div>
+
+          <div class="tool-form-group">
+            <label for="chord-inversion-select">Inversion:</label>
+            <select id="chord-inversion-select" class="form-select">
+              <option value="0">Root Position</option>
+              <option value="1">1st Inversion</option>
+              <option value="2">2nd Inversion</option>
+            </select>
+          </div>
+
+          <div class="tool-result-display">
+            <strong style="font-size: 0.85rem; color: var(--text-secondary);">Chord Notes:</strong>
+            <div id="chord-notes-display" class="tool-result-notes"></div>
+          </div>
+
+          <div class="button-group">
+            <button id="play-chord-btn" class="btn btn-accent" style="flex: 1;">▶ Play Block Chord</button>
+            <button id="play-chord-arp-btn" class="btn btn-secondary" style="flex: 1;">▶ Arpeggio</button>
+          </div>
+        </div>
+
+        <!-- Tool 3: Metronome & Rhythm Trainer -->
+        <div class="tool-card">
+          <h3><span>⏱️</span> Metronome & Tempo</h3>
+          <p class="tool-subtitle">Practice rhythm and internal pulse with high precision audio clicks.</p>
+
+          <div class="metronome-visualizer">
+            <div id="metronome-beat-indicator" class="beat-light"></div>
+            <div class="metronome-bpm-display">
+              <span id="bpm-val">100</span> <span style="font-size: 1rem; color: var(--text-muted); font-weight: 500;">BPM</span>
+            </div>
+            <div id="metronome-beat-counter" style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 600;">
+              Beat 1 of 4
+            </div>
+          </div>
+
+          <div class="tool-form-group">
+            <div class="metronome-slider-row">
+              <span style="font-size: 0.8rem; color: var(--text-muted);">40</span>
+              <input type="range" id="metronome-bpm" class="metronome-slider" min="40" max="220" value="100">
+              <span style="font-size: 0.8rem; color: var(--text-muted);">220</span>
+            </div>
+          </div>
+
+          <div class="tool-form-group">
+            <label for="metronome-meter">Time Signature:</label>
+            <select id="metronome-meter" class="form-select">
+              <option value="4">4/4 (Common Time)</option>
+              <option value="3">3/4 (Waltz Time)</option>
+              <option value="2">2/4 (March Time)</option>
+              <option value="6">6/8 (Compound Time)</option>
+            </select>
+          </div>
+
+          <div class="button-group">
+            <button id="metronome-toggle-btn" class="btn btn-primary" style="flex: 1.5;">▶ Start Metronome</button>
+            <button id="tap-tempo-btn" class="btn btn-secondary" style="flex: 1;">Tap Tempo</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Ear Training & Quizzes -->
+    <section id="tab-quiz" class="tab-view">
+      <div class="quiz-container">
+        <div class="quiz-header">
+          <div>
+            <h3 style="font-size: 1.5rem; color: #fff;">Ear Training Trainer</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Identify intervals, chords, and notes by ear.</p>
+          </div>
+          <div class="quiz-stats">
+            <div class="stat-item">
+              <span class="stat-label">Score</span>
+              <span class="stat-val" id="quiz-score-val">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Streak</span>
+              <span class="stat-val" id="quiz-streak-val">0 🔥</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-form-group" style="max-width: 320px; margin: 0 auto 1.5rem;">
+          <label for="quiz-type-select" style="text-align: center;">Training Category:</label>
+          <select id="quiz-type-select" class="form-select">
+            <option value="interval">Interval Recognition (m2 to Octave)</option>
+            <option value="chord">Chord Quality (Major, Minor, Dim, Aug)</option>
+            <option value="note">Pitch Ear Test (Natural Notes)</option>
+          </select>
+        </div>
+
+        <div class="quiz-card">
+          <div class="quiz-prompt" id="quiz-prompt">Listen to the audio and choose the correct answer:</div>
+          <button id="quiz-play-audio-btn" class="btn btn-primary quiz-play-btn">
+            🔊 Replay Sound
+          </button>
+
+          <div class="quiz-options-grid" id="quiz-options">
+            <!-- Injected by app.js -->
+          </div>
+
+          <div class="quiz-feedback" id="quiz-feedback"></div>
+
+          <button id="quiz-next-btn" class="btn btn-accent" style="display: none; margin-top: 1rem;">
+            Next Question →
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Application Footer -->
+  <footer class="app-footer">
+    <p><strong>MusicTheory101</strong> — Open-source music theory resource built for learners and creators.</p>
+    <p style="margin-top: 0.5rem;">
+      Repository: <a href="https://github.com/chanAle-lab/MusicTheory101" target="_blank" rel="noopener">github.com/chanAle-lab/MusicTheory101</a> |
+      Live Site: <a href="https://chanale-lab.github.io/MusicTheory101/" target="_blank" rel="noopener">chanale-lab.github.io/MusicTheory101</a>
+    </p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="audio.js"></script>
+  <script src="piano.js"></script>
+  <script src="lessons.js"></script>
+  <script src="circle-of-fifths.js"></script>
+  <script src="tools.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
