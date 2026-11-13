@@ -322,7 +322,9 @@ class NoteFlashcardsEngine {
       },
 
       // =========================================================================
-      // CHECKLIST 3: THE STAVE, CLEFS & NOTES (GRAND STAFF)
+      // =========================================================================
+      // CHECKLIST 3: THE STAVE, CLEFS & NOTES (GRAND STAFF) & ACCIDENTALS
+      // Note: In Grade 1 flashcards, answer strictly displays only the note name.
       // =========================================================================
       {
         id: 'stave-middle-c',
@@ -333,28 +335,20 @@ class NoteFlashcardsEngine {
         pitch: 'C',
         octave: 4,
         accidental: null,
-        fullName: 'C4',
-        name: 'Middle C (C4)',
-        beats: 'Reference pitch bridging Treble & Bass clefs',
-        description: 'Sits on the first ledger line below the Treble stave, or first ledger line above the Bass stave.',
-        hint: 'The exact center anchor connecting both clefs on the Grand Staff.',
+        name: 'Middle C',
         audioNote: 'C4'
       },
       {
-        id: 'stave-treble-g4',
+        id: 'stave-treble-d4',
         category: 'notes',
         tag: 'Grade 1 • Grand Staff Notes',
         type: 'note-grand',
         clef: 'treble',
-        pitch: 'G',
+        pitch: 'D',
         octave: 4,
         accidental: null,
-        fullName: 'G4',
-        name: 'G4 (Treble Clef Benchmark)',
-        beats: 'Line 2 of the Treble Stave',
-        description: 'The spiral of the Treble Clef (G-clef) loops directly around this 2nd line.',
-        hint: 'Mnemonic: "Good" in Every Good Boy Does Fine.',
-        audioNote: 'G4'
+        name: 'D',
+        audioNote: 'D4'
       },
       {
         id: 'stave-treble-e4',
@@ -365,11 +359,7 @@ class NoteFlashcardsEngine {
         pitch: 'E',
         octave: 4,
         accidental: null,
-        fullName: 'E4',
-        name: 'E4 (Bottom Line of Treble)',
-        beats: 'Line 1 of the Treble Stave',
-        description: 'The lowest line of the five-line treble stave.',
-        hint: 'Mnemonic: "Every" in Every Good Boy Does Fine.',
+        name: 'E',
         audioNote: 'E4'
       },
       {
@@ -381,11 +371,20 @@ class NoteFlashcardsEngine {
         pitch: 'F',
         octave: 4,
         accidental: null,
-        fullName: 'F4 (Space 1)',
-        beats: 'Space 1 of the Treble Stave',
-        description: 'Sits between Line 1 (E4) and Line 2 (G4).',
-        hint: 'Mnemonic: "F" in F-A-C-E spaces.',
+        name: 'F',
         audioNote: 'F4'
+      },
+      {
+        id: 'stave-treble-g4',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'treble',
+        pitch: 'G',
+        octave: 4,
+        accidental: null,
+        name: 'G',
+        audioNote: 'G4'
       },
       {
         id: 'stave-treble-a4',
@@ -396,12 +395,20 @@ class NoteFlashcardsEngine {
         pitch: 'A',
         octave: 4,
         accidental: null,
-        fullName: 'A4',
-        name: 'A4 (Space 2 • 440 Hz Tuning Pitch)',
-        beats: 'Space 2 of the Treble Stave',
-        description: 'The second space from the bottom. International tuning standard A4 = 440 Hz.',
-        hint: 'Mnemonic: "A" in F-A-C-E spaces.',
+        name: 'A',
         audioNote: 'A4'
+      },
+      {
+        id: 'stave-treble-b4',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'treble',
+        pitch: 'B',
+        octave: 4,
+        accidental: null,
+        name: 'B',
+        audioNote: 'B4'
       },
       {
         id: 'stave-treble-c5',
@@ -412,28 +419,68 @@ class NoteFlashcardsEngine {
         pitch: 'C',
         octave: 5,
         accidental: null,
-        fullName: 'C5',
-        name: 'C5 (Treble C)',
-        beats: 'Space 3 of the Treble Stave',
-        description: 'One octave above Middle C (C4).',
-        hint: 'Mnemonic: "C" in F-A-C-E spaces.',
+        name: 'C',
         audioNote: 'C5'
       },
       {
-        id: 'stave-bass-f3',
+        id: 'stave-treble-d5',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'treble',
+        pitch: 'D',
+        octave: 5,
+        accidental: null,
+        name: 'D',
+        audioNote: 'D5'
+      },
+      {
+        id: 'stave-treble-e5',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'treble',
+        pitch: 'E',
+        octave: 5,
+        accidental: null,
+        name: 'E',
+        audioNote: 'E5'
+      },
+      {
+        id: 'stave-treble-f5',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'treble',
+        pitch: 'F',
+        octave: 5,
+        accidental: null,
+        name: 'F',
+        audioNote: 'F5'
+      },
+      {
+        id: 'stave-treble-g5',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'treble',
+        pitch: 'G',
+        octave: 5,
+        accidental: null,
+        name: 'G',
+        audioNote: 'G5'
+      },
+      {
+        id: 'stave-bass-f2',
         category: 'notes',
         tag: 'Grade 1 • Grand Staff Notes',
         type: 'note-grand',
         clef: 'bass',
         pitch: 'F',
-        octave: 3,
+        octave: 2,
         accidental: null,
-        fullName: 'F3',
-        name: 'F3 (Bass Clef Benchmark)',
-        beats: 'Line 4 of the Bass Stave',
-        description: 'The two dots of the Bass Clef (F-clef) enclose this line 4!',
-        hint: 'Mnemonic: "Fine" in Good Boys Do Fine Always.',
-        audioNote: 'F3'
+        name: 'F',
+        audioNote: 'F2'
       },
       {
         id: 'stave-bass-g2',
@@ -444,12 +491,32 @@ class NoteFlashcardsEngine {
         pitch: 'G',
         octave: 2,
         accidental: null,
-        fullName: 'G2',
-        name: 'G2 (Bottom Line of Bass)',
-        beats: 'Line 1 of the Bass Stave',
-        description: 'The lowest line of the standard 5-line bass stave.',
-        hint: 'Mnemonic: "Good" in Good Boys Do Fine Always.',
+        name: 'G',
         audioNote: 'G2'
+      },
+      {
+        id: 'stave-bass-a2',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'bass',
+        pitch: 'A',
+        octave: 2,
+        accidental: null,
+        name: 'A',
+        audioNote: 'A2'
+      },
+      {
+        id: 'stave-bass-b2',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'bass',
+        pitch: 'B',
+        octave: 2,
+        accidental: null,
+        name: 'B',
+        audioNote: 'B2'
       },
       {
         id: 'stave-bass-c3',
@@ -460,22 +527,87 @@ class NoteFlashcardsEngine {
         pitch: 'C',
         octave: 3,
         accidental: null,
-        fullName: 'C3',
-        name: 'C3 (Low C)',
-        beats: 'Space 2 of the Bass Stave',
-        description: 'One octave below Middle C (C4).',
-        hint: 'Mnemonic: "Cows" in All Cows Eat Grass.',
+        name: 'C',
         audioNote: 'C3'
+      },
+      {
+        id: 'stave-bass-d3',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'bass',
+        pitch: 'D',
+        octave: 3,
+        accidental: null,
+        name: 'D',
+        audioNote: 'D3'
+      },
+      {
+        id: 'stave-bass-e3',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'bass',
+        pitch: 'E',
+        octave: 3,
+        accidental: null,
+        name: 'E',
+        audioNote: 'E3'
+      },
+      {
+        id: 'stave-bass-f3',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'bass',
+        pitch: 'F',
+        octave: 3,
+        accidental: null,
+        name: 'F',
+        audioNote: 'F3'
+      },
+      {
+        id: 'stave-bass-g3',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'bass',
+        pitch: 'G',
+        octave: 3,
+        accidental: null,
+        name: 'G',
+        audioNote: 'G3'
+      },
+      {
+        id: 'stave-bass-a3',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'bass',
+        pitch: 'A',
+        octave: 3,
+        accidental: null,
+        name: 'A',
+        audioNote: 'A3'
+      },
+      {
+        id: 'stave-bass-b3',
+        category: 'notes',
+        tag: 'Grade 1 • Grand Staff Notes',
+        type: 'note-grand',
+        clef: 'bass',
+        pitch: 'B',
+        octave: 3,
+        accidental: null,
+        name: 'B',
+        audioNote: 'B3'
       },
       {
         id: 'stave-sharp-sign',
         category: 'notes',
         tag: 'Grade 1 • Accidentals',
         type: 'symbol',
-        name: 'Sharp Sign (♯)',
-        beats: 'Raises pitch by 1 semitone (half step)',
-        description: 'Move to the very next adjacent key to the right (higher in pitch).',
-        hint: 'Example: C ➔ C♯. Cancelled by a natural sign (♮).',
+        name: 'Sharp (♯)',
         audioNote: 'C#4',
         renderFront: (w, h) => `
           <svg viewBox="0 0 ${w} ${h}" class="flashcard-symbol-svg">
@@ -488,10 +620,7 @@ class NoteFlashcardsEngine {
         category: 'notes',
         tag: 'Grade 1 • Accidentals',
         type: 'symbol',
-        name: 'Flat Sign (♭)',
-        beats: 'Lowers pitch by 1 semitone (half step)',
-        description: 'Move to the very next adjacent key to the left (lower in pitch).',
-        hint: 'Example: B ➔ B♭. Cancelled by a natural sign (♮).',
+        name: 'Flat (♭)',
         audioNote: 'Bb4',
         renderFront: (w, h) => `
           <svg viewBox="0 0 ${w} ${h}" class="flashcard-symbol-svg">
@@ -504,10 +633,7 @@ class NoteFlashcardsEngine {
         category: 'notes',
         tag: 'Grade 1 • Accidentals',
         type: 'symbol',
-        name: 'Natural Sign (♮)',
-        beats: 'Cancels a previous Sharp (♯) or Flat (♭)',
-        description: 'Returns the note to its natural white-key pitch.',
-        hint: 'Cancels any preceding accidental within that bar or from the key signature.',
+        name: 'Natural (♮)',
         audioNote: 'C4',
         renderFront: (w, h) => `
           <svg viewBox="0 0 ${w} ${h}" class="flashcard-symbol-svg">
@@ -979,38 +1105,55 @@ class NoteFlashcardsEngine {
 
         <!-- BACK FACE -->
         <div class="flashcard-face flashcard-back">
-          <div class="flashcard-meta-top">
-            <span class="tag" style="background: var(--color-answer-soft); color: var(--color-answer); font-weight: 700;">
-              ✓ Checklist Answer
-            </span>
-            <span style="font-size: var(--text-xs); color: var(--color-muted);">
-              ${card.tag}
-            </span>
-          </div>
+          ${card.category === 'notes' ? `
+            <div class="flashcard-note-only-wrap">
+              <div class="flashcard-note-only-name">${card.name}</div>
+            </div>
 
-          <div class="flashcard-back-body">
-            <h2 class="flashcard-note-name">${card.name}</h2>
-            <p class="flashcard-position-text">
-              <strong>Value / Meaning:</strong> ${card.beats}
-            </p>
-            <p style="font-size: var(--text-sm); color: var(--color-ink); margin-bottom: var(--space-2);">
-              ${card.description}
-            </p>
-            <p class="flashcard-hint-text">
-              💡 <em>${card.hint}</em>
-            </p>
-          </div>
+            <div class="flashcard-footer-prompt">
+              ${hasSound ? `
+                <button class="btn outline small" onclick="event.stopPropagation(); window.flashcardsEngine.playCurrentCardSound();" title="Press P to replay sound">
+                  🔊 Replay Note
+                </button>
+              ` : `<span></span>`}
+              <span style="font-size: var(--text-xs); color: var(--color-muted);">
+                Card ${this.currentIndex + 1} of ${this.deck.length}
+              </span>
+            </div>
+          ` : `
+            <div class="flashcard-meta-top">
+              <span class="tag" style="background: var(--color-answer-soft); color: var(--color-answer); font-weight: 700;">
+                ✓ Checklist Answer
+              </span>
+              <span style="font-size: var(--text-xs); color: var(--color-muted);">
+                ${card.tag}
+              </span>
+            </div>
 
-          <div class="flashcard-footer-prompt">
-            ${hasSound ? `
-              <button class="btn outline small" onclick="event.stopPropagation(); window.flashcardsEngine.playCurrentCardSound();">
-                🔊 Replay Audio
-              </button>
-            ` : `<span></span>`}
-            <span style="font-size: var(--text-xs); color: var(--color-muted);">
-              Card ${this.currentIndex + 1} of ${this.deck.length}
-            </span>
-          </div>
+            <div class="flashcard-back-body">
+              <h2 class="flashcard-note-name">${card.name}</h2>
+              <p class="flashcard-position-text">
+                <strong>Value / Meaning:</strong> ${card.beats}
+              </p>
+              <p style="font-size: var(--text-sm); color: var(--color-ink); margin-bottom: var(--space-2);">
+                ${card.description}
+              </p>
+              <p class="flashcard-hint-text">
+                💡 <em>${card.hint}</em>
+              </p>
+            </div>
+
+            <div class="flashcard-footer-prompt">
+              ${hasSound ? `
+                <button class="btn outline small" onclick="event.stopPropagation(); window.flashcardsEngine.playCurrentCardSound();">
+                  🔊 Replay Audio
+                </button>
+              ` : `<span></span>`}
+              <span style="font-size: var(--text-xs); color: var(--color-muted);">
+                Card ${this.currentIndex + 1} of ${this.deck.length}
+              </span>
+            </div>
+          `}
         </div>
       `;
 

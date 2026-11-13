@@ -985,6 +985,26 @@ main {
   height: 190px;
 }
 
+.flashcard-note-only-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  width: 100%;
+}
+
+.flashcard-note-only-name {
+  font-family: var(--font-display);
+  font-size: clamp(3.4rem, 10vw, 5.5rem);
+  font-weight: 800;
+  color: var(--color-accent);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-shadow: 0 2px 14px rgba(184, 67, 47, 0.14);
+}
+
 .flashcard-back-body {
   text-align: center;
   padding: var(--space-2) var(--space-4);
