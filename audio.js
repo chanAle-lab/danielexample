@@ -1,6 +1,7 @@
 /**
  * MusicTheory101 Audio Engine
  * Powered by Web Audio API for zero-dependency, low-latency, polyphonic sound synthesis.
+ * Supports Cadence playback, Ornaments (Trill, Turn, Mordent), Scales, and Chords.
  */
 
 class SoundEngine {
@@ -41,7 +42,6 @@ class SoundEngine {
   }
 
   noteToFreq(note) {
-    // Note format: "C4", "F#3", "Bb5"
     const noteMap = {
       'C': 0, 'C#': 1, 'DB': 1,
       'D': 2, 'D#': 3, 'EB': 3,
@@ -52,15 +52,15 @@ class SoundEngine {
       'B': 11
     };
 
-    const match = note.toUpperCase().match(/^([A-G][#B]?)(-?\d+)$/);
-    if (!match) return 440; // Default fallback A4
+    const clean = note.toUpperCase().replace('♯', '#').replace('♭', 'B');
+    const match = clean.match(/^([A-G][#B]?)(-?\d+)$/);
+    if (!match) return 440;
 
     const pitch = match[1];
     const octave = parseInt(match[2], 10);
     const semitone = noteMap[pitch];
     if (semitone === undefined) return 440;
 
-    // MIDI note number: C4 is 60, A4 is 69
     const midi = (octave + 1) * 12 + semitone;
     return 440 * Math.pow(2, (midi - 69) / 12);
   }
@@ -72,7 +72,6 @@ class SoundEngine {
     return `${pitch}${octave}`;
   }
 
-  // Play a note with piano-like timbre
   startNote(note, velocity = 0.8) {
     this.init();
     const freq = typeof note === 'number' ? note : this.noteToFreq(note);
@@ -83,8 +82,6 @@ class SoundEngine {
     }
 
     const t = this.ctx.currentTime;
-
-    // Voice setup: Main oscillator (triangle) + harmonic overtone (sine) + sub oscillator
     const osc1 = this.ctx.createOscillator();
     const osc2 = this.ctx.createOscillator();
     const gainNode = this.ctx.createGain();
@@ -94,14 +91,12 @@ class SoundEngine {
     osc1.frequency.setValueAtTime(freq, t);
 
     osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(freq * 2, t); // 2nd harmonic
+    osc2.frequency.setValueAtTime(freq * 2, t);
 
-    // Filter to soften brightness naturally over time
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(Math.min(freq * 4, 6000), t);
     filter.frequency.exponentialRampToValueAtTime(Math.max(freq * 1.5, 300), t + 1.2);
 
-    // Dynamic gain envelope (percussive piano strike)
     const peakGain = 0.45 * velocity;
     gainNode.gain.setValueAtTime(0.0001, t);
     gainNode.gain.exponentialRampToValueAtTime(peakGain, t + 0.015);
@@ -119,7 +114,6 @@ class SoundEngine {
     const voice = { osc1, osc2, gainNode, filter, startTime: t };
     this.activeVoices.set(key, voice);
 
-    // Auto cleanup after 2.6s
     setTimeout(() => {
       if (this.activeVoices.get(key) === voice) {
         this.stopNote(key);
@@ -158,14 +152,12 @@ class SoundEngine {
     }, duration * 1000);
   }
 
-  // Play simultaneous chord
   playChord(notes, duration = 1.0, velocity = 0.7) {
     notes.forEach(note => {
       this.playNote(note, duration, velocity);
     });
   }
 
-  // Play arpeggio / sequence of notes
   playArpeggio(notes, noteDuration = 0.25, gap = 0.2, callback = null) {
     notes.forEach((note, index) => {
       setTimeout(() => {
@@ -175,7 +167,43 @@ class SoundEngine {
     });
   }
 
-  // Metronome tick
+  // Play ABRSM Cadence (Chord 1 -> Pause -> Chord 2)
+  playCadence(chord1, chord2) {
+    this.playChord(chord1, 1.2, 0.75);
+    setTimeout(() => {
+      this.playChord(chord2, 1.8, 0.85);
+    }, 1200);
+  }
+
+  // Play Ornament (Trill, Turn, Mordent)
+  playOrnament(type, baseNote = 'C5') {
+    const noteMap = {
+      'C5': { base: 'C5', above: 'D5', below: 'B4' },
+      'G4': { base: 'G4', above: 'A4', below: 'F#4' }
+    };
+    const set = noteMap[baseNote] || noteMap['C5'];
+
+    if (type === 'trill') {
+      const trillNotes = [set.base, set.above, set.base, set.above, set.base, set.above, set.base];
+      this.playArpeggio(trillNotes, 0.12, 0.1);
+    } else if (type === 'turn') {
+      const turnNotes = [set.above, set.base, set.below, set.base];
+      this.playArpeggio(turnNotes, 0.18, 0.16);
+    } else if (type === 'upper_mordent') {
+      const notes = [set.base, set.above, set.base];
+      this.playArpeggio(notes, 0.14, 0.12);
+    } else if (type === 'lower_mordent') {
+      const notes = [set.base, set.below, set.base];
+      this.playArpeggio(notes, 0.14, 0.12);
+    } else if (type === 'acciaccatura') {
+      this.playNote(set.above, 0.08, 0.6);
+      setTimeout(() => this.playNote(set.base, 0.7, 0.9), 70);
+    } else if (type === 'appoggiatura') {
+      this.playNote(set.above, 0.4, 0.85);
+      setTimeout(() => this.playNote(set.base, 0.5, 0.75), 380);
+    }
+  }
+
   playClick(isAccent = false) {
     this.init();
     const t = this.ctx.currentTime;
@@ -196,5 +224,4 @@ class SoundEngine {
   }
 }
 
-// Global singleton instance
 window.soundEngine = new SoundEngine();

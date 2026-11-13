@@ -1,50 +1,56 @@
 /**
- * MusicTheory101 Main Application Coordinator
+ * ABRSM Music Theory 101 - Master Application Coordinator
+ * Integrates Stave Engine, Piano, Syllabus Data, Cadences, Ornaments, Glossary, and Exam Trainer.
  */
 
-class MusicTheoryApp {
+class AbrsmApp {
   constructor() {
-    this.currentTab = 'lessons';
-    this.currentLessonIndex = 0;
+    this.currentGrade = 1;
+    this.currentClef = 'treble';
+    this.currentTab = 'syllabus';
+
+    this.stave = null;
     this.piano = null;
-    this.circleWidget = null;
   }
 
   init() {
-    // Initialize Piano Keyboard (C3 to C5, 2 full octaves + top C)
+    // 1. Initialize Musical Stave Engine
+    this.stave = new MusicalStave('main-stave-container', {
+      clef: this.currentClef,
+      notes: [{ pitch: 'C', octave: 4, accidental: null }] // Start on Middle C
+    });
+    window.staveEngine = this;
+
+    // 2. Initialize Interactive Piano Keyboard
     this.piano = new InteractivePiano('main-piano-container', {
       startOctave: 3,
       octaves: 2,
       includeHighC: true,
       onNoteOn: (note) => {
-        // Can add realtime staff or chord detector here
+        // Sync piano key press to Musical Stave
+        this.displayPianoNoteOnStave(note);
       }
     });
     window.mainPiano = this.piano;
 
-    // Initialize Circle of Fifths
-    this.circleWidget = new CircleOfFifthsWidget('circle-of-fifths-container', {
-      onSelectKey: (keyData) => {
-        // Automatically sync piano highlight when key selected
-      }
-    });
-    window.circleWidget = this.circleWidget;
+    // 3. Render Grade 1 Syllabus initially
+    this.loadGrade(1);
 
-    // Build Lessons UI
-    this.renderLessonSidebar();
-    this.loadLesson(0);
+    // 4. Render Cadences & Ornaments
+    this.renderCadences();
+    this.renderOrnaments();
+    this.renderTechnicalDegrees();
+    this.renderOrchestralInstruments();
+    this.renderGlossary();
 
-    // Initialize Tools UI
-    this.initToolsUI();
+    // 5. Initialize Exam Practice
+    this.initExamTrainer();
 
-    // Initialize Quiz
-    this.initQuizUI();
-
-    // Bind Global Header Events
-    this.bindGlobalEvents();
+    // 6. Bind Global Navigation Events
+    this.bindEvents();
   }
 
-  bindGlobalEvents() {
+  bindEvents() {
     // Navigation Tabs
     document.querySelectorAll('.nav-tab-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -53,16 +59,30 @@ class MusicTheoryApp {
       });
     });
 
-    // Volume Slider
-    const volumeSlider = document.getElementById('master-volume');
-    if (volumeSlider) {
-      volumeSlider.addEventListener('input', (e) => {
-        const vol = parseFloat(e.target.value);
-        window.soundEngine.setVolume(vol);
+    // Grade Switcher Pills (Top Banner)
+    document.querySelectorAll('.grade-pill-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const grade = parseInt(e.currentTarget.dataset.grade, 10);
+        this.loadGrade(grade);
+      });
+    });
+
+    // Clef Switcher (Stave Panel)
+    document.querySelectorAll('.clef-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const clef = e.currentTarget.dataset.clef;
+        this.setClef(clef);
+      });
+    });
+
+    // Volume Slider & Mute
+    const volSlider = document.getElementById('master-volume');
+    if (volSlider) {
+      volSlider.addEventListener('input', (e) => {
+        window.soundEngine.setVolume(parseFloat(e.target.value));
       });
     }
 
-    // Mute Button
     const muteBtn = document.getElementById('mute-btn');
     if (muteBtn) {
       muteBtn.addEventListener('click', () => {
@@ -71,422 +91,337 @@ class MusicTheoryApp {
       });
     }
 
-    // Piano Label Mode
-    const labelSelect = document.getElementById('piano-label-mode');
-    if (labelSelect) {
-      labelSelect.addEventListener('change', (e) => {
-        this.piano.setLabelMode(e.target.value);
-      });
+    // Glossary Search & Filter
+    const searchInput = document.getElementById('glossary-search');
+    const gradeSelect = document.getElementById('glossary-grade-filter');
+    if (searchInput) {
+      searchInput.addEventListener('input', () => this.filterGlossary());
     }
-
-    // Clear Piano Highlights
-    const clearBtn = document.getElementById('clear-piano-btn');
-    if (clearBtn) {
-      clearBtn.addEventListener('click', () => {
-        this.piano.clearHighlights();
-      });
+    if (gradeSelect) {
+      gradeSelect.addEventListener('change', () => this.filterGlossary());
     }
   }
 
   switchTab(tabId) {
     this.currentTab = tabId;
 
-    // Update Tab Buttons
     document.querySelectorAll('.nav-tab-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.tab === tabId);
     });
 
-    // Update Views
     document.querySelectorAll('.tab-view').forEach(view => {
       view.classList.toggle('active', view.id === `tab-${tabId}`);
     });
 
-    // Sub-actions on view switch
-    if (tabId === 'circle' && this.circleWidget) {
-      this.circleWidget.updateDetails();
-    } else if (tabId === 'quiz' && !window.musicTools.quizQuestion) {
-      this.nextQuizQuestion();
+    if (tabId === 'exam' && !window.abrsmQuizEngine.currentQuestion) {
+      this.nextExamQuestion();
     }
   }
 
-  // --- Lessons Logic ---
-  renderLessonSidebar() {
-    const listEl = document.getElementById('lesson-nav-list');
-    if (!listEl || !window.LESSONS_DATA) return;
+  loadGrade(gradeNum) {
+    this.currentGrade = gradeNum;
 
-    listEl.innerHTML = window.LESSONS_DATA.map((lesson, index) => `
-      <button class="lesson-nav-item ${index === this.currentLessonIndex ? 'active' : ''}" data-index="${index}">
-        <span class="lesson-num">${lesson.number}</span>
-        <span class="lesson-title-text">${lesson.title}</span>
-      </button>
+    // Update pill states
+    document.querySelectorAll('.grade-pill-btn').forEach(btn => {
+      const g = parseInt(btn.dataset.grade, 10);
+      btn.classList.toggle('active', g === gradeNum);
+    });
+
+    const data = window.ABRSM_SYLLABUS[gradeNum];
+    if (!data) return;
+
+    // Render Syllabus Overview Card
+    const container = document.getElementById('syllabus-content-area');
+    if (container) {
+      container.innerHTML = `
+        <div class="syllabus-overview-card">
+          <div class="syllabus-header-row">
+            <div>
+              <h2 class="grade-title-lg">${data.title}</h2>
+              <span class="grade-badge-tag">${data.badge}</span>
+            </div>
+            <div class="grade-quick-keys">
+              <strong style="color: var(--text-muted); font-size: 0.8rem;">REQUIRED KEYS:</strong>
+              <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.35rem;">
+                ${data.keys.map(k => `<span class="note-chip">${k}</span>`).join('')}
+              </div>
+            </div>
+          </div>
+
+          <p class="syllabus-summary-p">${data.summary}</p>
+
+          <h3 style="font-size: 1.1rem; color: var(--abrsm-gold); margin-bottom: 0.85rem;">
+            Official Syllabus Learning Checklist:
+          </h3>
+          <div class="checklist-grid">
+            ${data.checklist.map((item, idx) => `
+              <div class="checklist-item">
+                <span class="checklist-check">✔</span>
+                <span>${item}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Auto-update stave clef buttons available for that grade
+    document.querySelectorAll('.clef-btn').forEach(btn => {
+      const clef = btn.dataset.clef;
+      const isAllowed = data.clefs.includes(clef);
+      btn.style.opacity = isAllowed ? '1' : '0.4';
+      btn.title = isAllowed ? `${clef} clef` : `Introduced in Grade ${clef === 'alto' ? 4 : 5}`;
+    });
+  }
+
+  setClef(clef) {
+    this.currentClef = clef;
+    document.querySelectorAll('.clef-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.clef === clef);
+    });
+    if (this.stave) {
+      this.stave.setClef(clef);
+    }
+  }
+
+  // Handle note click from Stave
+  handleNoteClick(noteString) {
+    if (window.soundEngine) {
+      window.soundEngine.playNote(noteString, 0.6);
+    }
+    if (this.piano) {
+      this.piano.pressKey(noteString);
+      setTimeout(() => this.piano.releaseKey(noteString), 400);
+    }
+  }
+
+  // Display piano key press on Stave
+  displayPianoNoteOnStave(noteString) {
+    // Note format: "C4", "C#4", "Bb4"
+    const match = noteString.match(/^([A-G])([#B]?)(\d+)$/);
+    if (!match) return;
+
+    const pitch = match[1];
+    const accidental = match[2] || null;
+    const octave = parseInt(match[3], 10);
+
+    if (this.stave) {
+      this.stave.addNote(pitch, octave, accidental);
+    }
+  }
+
+  // --- Cadences Section ---
+  renderCadences() {
+    const container = document.getElementById('cadences-container');
+    if (!container || !window.ABRSM_CADENCES) return;
+
+    container.innerHTML = window.ABRSM_CADENCES.map(cadence => `
+      <div class="cadence-card">
+        <h3 style="font-size: 1.3rem; color: #fff;">${cadence.name}</h3>
+        <span class="cadence-progression-badge">${cadence.progression}</span>
+        <p style="color: var(--abrsm-gold); font-size: 0.85rem; font-weight: 700;">${cadence.effect}</p>
+        <p style="color: var(--text-secondary); font-size: 0.875rem; margin: 0.5rem 0;">${cadence.description}</p>
+        
+        <strong style="font-size: 0.8rem; color: var(--text-muted);">Audition in Key:</strong>
+        <div class="cadence-key-buttons">
+          ${Object.keys(cadence.keys).map(key => `
+            <button class="btn btn-sm btn-secondary" onclick="window.app.playCadenceAudio('${cadence.id}', '${key}')">
+              ▶ Key of ${key}
+            </button>
+          `).join('')}
+        </div>
+      </div>
     `).join('');
-
-    listEl.querySelectorAll('.lesson-nav-item').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const idx = parseInt(e.currentTarget.dataset.index, 10);
-        this.loadLesson(idx);
-      });
-    });
   }
 
-  loadLesson(index) {
-    const lesson = window.LESSONS_DATA[index];
-    if (!lesson) return;
+  playCadenceAudio(cadenceId, key) {
+    const cad = window.ABRSM_CADENCES.find(c => c.id === cadenceId);
+    if (!cad || !cad.keys[key]) return;
 
-    this.currentLessonIndex = index;
+    const kData = cad.keys[key];
+    window.soundEngine.playCadence(kData.chord1, kData.chord2);
 
-    // Update sidebar active state
-    document.querySelectorAll('.lesson-nav-item').forEach((btn, i) => {
-      btn.classList.toggle('active', i === index);
-    });
+    // Highlight chords sequentially on piano
+    const h1 = {};
+    kData.chord1.forEach(n => h1[n] = { color: '#6366f1', badge: cad.name1 });
+    this.piano.setHighlights(h1);
 
-    // Render content
-    const tagEl = document.getElementById('lesson-current-tag');
-    const bodyEl = document.getElementById('lesson-content-body');
-    const prevBtn = document.getElementById('prev-lesson-btn');
-    const nextBtn = document.getElementById('next-lesson-btn');
-
-    if (tagEl) tagEl.textContent = lesson.tag;
-    if (bodyEl) {
-      bodyEl.innerHTML = lesson.content;
-    }
-
-    if (prevBtn) {
-      prevBtn.disabled = index === 0;
-      prevBtn.onclick = () => this.loadLesson(index - 1);
-    }
-    if (nextBtn) {
-      nextBtn.disabled = index === window.LESSONS_DATA.length - 1;
-      nextBtn.onclick = () => this.loadLesson(index + 1);
-    }
-
-    // Scroll smoothly to top of lesson content if on mobile
-    const card = document.querySelector('.lesson-content-card');
-    if (card && window.innerWidth < 900) {
-      card.scrollIntoView({ behavior: 'smooth' });
-    }
+    setTimeout(() => {
+      const h2 = {};
+      kData.chord2.forEach(n => h2[n] = { color: '#fbbf24', badge: cad.name2 });
+      this.piano.setHighlights(h2);
+    }, 1200);
   }
 
-  // --- Interactive Lesson Actions ---
-  playChromaticDemo() {
-    const chromatic = ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4', 'C5'];
-    const highlights = {};
-    chromatic.forEach(n => {
-      highlights[n] = { color: '#06b6d4' };
-    });
-    this.piano.setHighlights(highlights);
-    window.soundEngine.playArpeggio(chromatic, 0.35, 0.28, (note) => {
-      this.piano.pulseNote(note, 250);
-    });
+  // --- Ornaments Section ---
+  renderOrnaments() {
+    const container = document.getElementById('ornaments-container');
+    if (!container || !window.ABRSM_ORNAMENTS) return;
+
+    container.innerHTML = window.ABRSM_ORNAMENTS.map(orn => `
+      <div class="ornament-card">
+        <div>
+          <div class="ornament-symbol">${orn.symbol}</div>
+          <h4 style="color: #fff; font-size: 1.1rem; margin-bottom: 0.25rem;">${orn.name}</h4>
+          <span class="glossary-grade-tag">Grade ${orn.grade}</span>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.5rem;">${orn.description}</p>
+        </div>
+        <button class="btn btn-sm btn-gold" style="margin-top: 1rem;" onclick="window.soundEngine.playOrnament('${orn.id}')">
+          ▶ Play Audio Demo
+        </button>
+      </div>
+    `).join('');
   }
 
-  highlightNaturals() {
-    const naturals = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-    const highlights = {};
-    naturals.forEach(n => {
-      highlights[n] = { color: '#38bdf8', badge: 'Nat' };
-    });
-    this.piano.setHighlights(highlights);
+  // --- Technical Degrees Section ---
+  renderTechnicalDegrees() {
+    const container = document.getElementById('technical-degrees-container');
+    if (!container || !window.TECHNICAL_SCALE_DEGREES) return;
+
+    container.innerHTML = window.TECHNICAL_SCALE_DEGREES.map(deg => `
+      <div class="degree-card">
+        <span class="degree-num">Degree ${deg.degree} (${deg.roman})</span>
+        <h4 class="degree-name">${deg.name}</h4>
+        <p class="degree-desc">${deg.role}</p>
+      </div>
+    `).join('');
   }
 
-  playStepDemo(type) {
-    if (type === 'half') {
-      const notes = ['C4', 'C#4'];
-      this.piano.setHighlights({
-        'C4': { color: '#ef4444', badge: 'Root' },
-        'C#4': { color: '#f59e0b', badge: 'Half' }
-      });
-      window.soundEngine.playArpeggio(notes, 0.5, 0.45);
-    } else {
-      const notes = ['C4', 'D4'];
-      this.piano.setHighlights({
-        'C4': { color: '#ef4444', badge: 'Root' },
-        'D4': { color: '#10b981', badge: 'Whole' }
-      });
-      window.soundEngine.playArpeggio(notes, 0.5, 0.45);
-    }
+  // --- Orchestral Instruments Section ---
+  renderOrchestralInstruments() {
+    const container = document.getElementById('orchestra-container');
+    if (!container || !window.ORCHESTRAL_INSTRUMENTS) return;
+
+    container.innerHTML = window.ORCHESTRAL_INSTRUMENTS.map(inst => `
+      <div class="instrument-card">
+        <span class="instrument-family-tag">${inst.family}</span>
+        <h4 class="instrument-title">${inst.name}</h4>
+        <p class="instrument-meta-line"><strong>Primary Clef:</strong> ${inst.clef}</p>
+        <p class="instrument-meta-line"><strong>Transposition:</strong> ${inst.transposing}</p>
+        <p class="instrument-meta-line"><strong>Sound:</strong> ${inst.sound}</p>
+        <span class="glossary-grade-tag">Grade ${inst.grade}</span>
+      </div>
+    `).join('');
   }
 
-  playScale(root, scaleType) {
-    const scaleNotes = window.musicTools.buildScale(root, scaleType, 4);
-    const highlights = {};
-    scaleNotes.forEach((n, idx) => {
-      highlights[n.fullName] = {
-        color: idx === 0 || idx === scaleNotes.length - 1 ? '#ef4444' : '#3b82f6',
-        badge: n.degree,
-        root: idx === 0
-      };
-    });
-    this.piano.setHighlights(highlights);
+  // --- Terms & Signs Glossary ---
+  renderGlossary(filterText = '', filterGrade = 'all') {
+    const tbody = document.getElementById('glossary-table-body');
+    if (!tbody || !window.ABRSM_TERMS) return;
 
-    const noteNames = scaleNotes.map(n => n.fullName);
-    window.soundEngine.playArpeggio(noteNames, 0.35, 0.28, (note) => {
-      this.piano.pulseNote(note, 250);
-    });
+    let terms = window.ABRSM_TERMS;
+    if (filterGrade !== 'all') {
+      const g = parseInt(filterGrade, 10);
+      terms = terms.filter(t => t.grade === g);
+    }
+    if (filterText) {
+      const txt = filterText.toLowerCase();
+      terms = terms.filter(t => t.term.toLowerCase().includes(txt) || t.translation.toLowerCase().includes(txt) || t.category.toLowerCase().includes(txt));
+    }
+
+    tbody.innerHTML = terms.map(t => `
+      <tr>
+        <td class="glossary-term">${t.term}</td>
+        <td>${t.translation}</td>
+        <td><span style="color: var(--text-muted); font-size: 0.8rem;">${t.category}</span></td>
+        <td><span class="glossary-grade-tag">Grade ${t.grade}</span></td>
+      </tr>
+    `).join('');
   }
 
-  playIntervalDemo(intervalId) {
-    const item = window.musicTools.intervalsList.find(i => i.id === intervalId);
-    if (!item) return;
-
-    const baseMidi = 60; // C4
-    const note1 = 'C4';
-    const note2 = window.soundEngine.midiToNote(baseMidi + item.semitones);
-
-    this.piano.setHighlights({
-      [note1]: { color: '#ef4444', badge: '1', root: true },
-      [note2]: { color: '#a855f7', badge: item.id }
-    });
-
-    window.soundEngine.playArpeggio([note1, note2], 0.6, 0.55);
+  filterGlossary() {
+    const searchVal = document.getElementById('glossary-search').value;
+    const gradeVal = document.getElementById('glossary-grade-filter').value;
+    this.renderGlossary(searchVal, gradeVal);
   }
 
-  playChordDemo(root, chordType) {
-    const chordNotes = window.musicTools.buildChord(root, chordType, 4);
-    const highlights = {};
-    chordNotes.forEach((n, idx) => {
-      highlights[n.fullName] = {
-        color: idx === 0 ? '#ef4444' : '#6366f1',
-        badge: n.degree,
-        root: idx === 0
-      };
-    });
-    this.piano.setHighlights(highlights);
+  // --- Exam Practice Trainer ---
+  initExamTrainer() {
+    const gradeSelect = document.getElementById('exam-grade-selector');
+    const nextBtn = document.getElementById('exam-next-btn');
 
-    const noteNames = chordNotes.map(n => n.fullName);
-    // Arpeggiate then hit together
-    window.soundEngine.playArpeggio(noteNames, 0.4, 0.3, () => {
-      setTimeout(() => {
-        window.soundEngine.playChord(noteNames, 1.2);
-      }, noteNames.length * 300 + 200);
-    });
-  }
-
-  // --- Tools UI Setup ---
-  initToolsUI() {
-    // Scale Explorer
-    const scaleRoot = document.getElementById('scale-root-select');
-    const scaleType = document.getElementById('scale-type-select');
-    const playScaleBtn = document.getElementById('play-scale-btn');
-
-    const updateScaleDisplay = () => {
-      if (!scaleRoot || !scaleType) return;
-      const root = scaleRoot.value;
-      const type = scaleType.value;
-      const notes = window.musicTools.buildScale(root, type, 4);
-
-      const notesContainer = document.getElementById('scale-notes-display');
-      if (notesContainer) {
-        notesContainer.innerHTML = notes.map(n => `<span class="note-chip">${n.note} (${n.degree})</span>`).join('');
-      }
-
-      const highlights = {};
-      notes.forEach((n, idx) => {
-        highlights[n.fullName] = {
-          color: idx === 0 ? '#ef4444' : '#06b6d4',
-          badge: n.degree,
-          root: idx === 0
-        };
-      });
-      this.piano.setHighlights(highlights);
-    };
-
-    if (scaleRoot && scaleType) {
-      scaleRoot.addEventListener('change', updateScaleDisplay);
-      scaleType.addEventListener('change', updateScaleDisplay);
-      if (playScaleBtn) {
-        playScaleBtn.addEventListener('click', () => {
-          this.playScale(scaleRoot.value, scaleType.value);
-        });
-      }
-    }
-
-    // Chord Explorer
-    const chordRoot = document.getElementById('chord-root-select');
-    const chordType = document.getElementById('chord-type-select');
-    const chordInversion = document.getElementById('chord-inversion-select');
-    const playChordBtn = document.getElementById('play-chord-btn');
-    const playArpBtn = document.getElementById('play-chord-arp-btn');
-
-    const updateChordDisplay = () => {
-      if (!chordRoot || !chordType) return;
-      const root = chordRoot.value;
-      const type = chordType.value;
-      const inv = parseInt(chordInversion.value, 10) || 0;
-      const notes = window.musicTools.buildChord(root, type, 4, inv);
-
-      const notesContainer = document.getElementById('chord-notes-display');
-      if (notesContainer) {
-        notesContainer.innerHTML = notes.map(n => `<span class="note-chip">${n.note} (${n.degree})</span>`).join('');
-      }
-
-      const highlights = {};
-      notes.forEach((n, idx) => {
-        highlights[n.fullName] = {
-          color: idx === 0 ? '#ef4444' : '#a855f7',
-          badge: n.degree,
-          root: idx === 0
-        };
-      });
-      this.piano.setHighlights(highlights);
-    };
-
-    if (chordRoot && chordType && chordInversion) {
-      chordRoot.addEventListener('change', updateChordDisplay);
-      chordType.addEventListener('change', updateChordDisplay);
-      chordInversion.addEventListener('change', updateChordDisplay);
-
-      if (playChordBtn) {
-        playChordBtn.addEventListener('click', () => {
-          const inv = parseInt(chordInversion.value, 10) || 0;
-          const notes = window.musicTools.buildChord(chordRoot.value, chordType.value, 4, inv);
-          window.soundEngine.playChord(notes.map(n => n.fullName), 1.2);
-        });
-      }
-
-      if (playArpBtn) {
-        playArpBtn.addEventListener('click', () => {
-          const inv = parseInt(chordInversion.value, 10) || 0;
-          const notes = window.musicTools.buildChord(chordRoot.value, chordType.value, 4, inv);
-          window.soundEngine.playArpeggio(notes.map(n => n.fullName), 0.4, 0.3);
-        });
-      }
-    }
-
-    // Metronome
-    const metronomeToggle = document.getElementById('metronome-toggle-btn');
-    const bpmSlider = document.getElementById('metronome-bpm');
-    const bpmDisplay = document.getElementById('bpm-val');
-    const meterSelect = document.getElementById('metronome-meter');
-    const tapTempoBtn = document.getElementById('tap-tempo-btn');
-
-    if (bpmSlider && bpmDisplay) {
-      bpmSlider.addEventListener('input', (e) => {
-        const val = parseInt(e.target.value, 10);
-        bpmDisplay.textContent = val;
-        window.musicTools.setMetronomeBpm(val);
-      });
-    }
-
-    if (metronomeToggle) {
-      metronomeToggle.addEventListener('click', () => {
-        const meter = parseInt(meterSelect.value, 10) || 4;
-        const isRunning = window.musicTools.toggleMetronome(parseInt(bpmSlider.value, 10), meter);
-        metronomeToggle.textContent = isRunning ? '⏸ Stop Metronome' : '▶ Start Metronome';
-        metronomeToggle.classList.toggle('btn-primary', !isRunning);
-        metronomeToggle.classList.toggle('btn-secondary', isRunning);
-      });
-    }
-
-    if (meterSelect) {
-      meterSelect.addEventListener('change', (e) => {
-        window.musicTools.beatsPerMeasure = parseInt(e.target.value, 10) || 4;
-      });
-    }
-
-    if (tapTempoBtn) {
-      tapTempoBtn.addEventListener('click', () => {
-        window.musicTools.tapTempo();
-      });
-    }
-  }
-
-  // --- Quiz UI Setup ---
-  initQuizUI() {
-    const typeSelect = document.getElementById('quiz-type-select');
-    const playAudioBtn = document.getElementById('quiz-play-audio-btn');
-    const nextBtn = document.getElementById('quiz-next-btn');
-
-    if (typeSelect) {
-      typeSelect.addEventListener('change', () => {
-        this.nextQuizQuestion();
-      });
-    }
-
-    if (playAudioBtn) {
-      playAudioBtn.addEventListener('click', () => {
-        window.musicTools.playCurrentQuestionAudio();
+    if (gradeSelect) {
+      gradeSelect.addEventListener('change', (e) => {
+        window.abrsmQuizEngine.setGradeFilter(e.target.value);
+        this.nextExamQuestion();
       });
     }
 
     if (nextBtn) {
       nextBtn.addEventListener('click', () => {
-        this.nextQuizQuestion();
+        this.nextExamQuestion();
       });
     }
   }
 
-  nextQuizQuestion() {
-    const typeSelect = document.getElementById('quiz-type-select');
-    const type = typeSelect ? typeSelect.value : 'interval';
-    const q = window.musicTools.generateQuizQuestion(type);
+  nextExamQuestion() {
+    const q = window.abrsmQuizEngine.getNextQuestion();
+    if (!q) return;
 
-    const promptEl = document.getElementById('quiz-prompt');
-    const optionsContainer = document.getElementById('quiz-options');
-    const feedbackEl = document.getElementById('quiz-feedback');
-    const nextBtn = document.getElementById('quiz-next-btn');
+    const catBadge = document.getElementById('exam-question-category');
+    const promptEl = document.getElementById('exam-question-prompt');
+    const optionsGrid = document.getElementById('exam-options-container');
+    const explanationBox = document.getElementById('exam-explanation');
+    const nextBtn = document.getElementById('exam-next-btn');
 
-    if (promptEl) promptEl.textContent = q.prompt;
-    if (feedbackEl) feedbackEl.innerHTML = '';
+    if (catBadge) catBadge.textContent = `Grade ${q.grade} • ${q.category}`;
+    if (promptEl) promptEl.textContent = q.question;
+    if (explanationBox) {
+      explanationBox.style.display = 'none';
+      explanationBox.innerHTML = '';
+    }
     if (nextBtn) nextBtn.style.display = 'none';
 
-    if (optionsContainer) {
-      optionsContainer.innerHTML = q.options.map(opt => `
-        <button class="quiz-choice-btn" data-id="${opt.id}">
-          <span>${opt.label}</span>
-          ${opt.sub ? `<span class="choice-sub">${opt.sub}</span>` : ''}
+    if (optionsGrid) {
+      optionsGrid.innerHTML = q.options.map(opt => `
+        <button class="exam-choice-btn" data-choice="${opt.replace(/"/g, '&quot;')}">
+          ${opt}
         </button>
       `).join('');
 
-      optionsContainer.querySelectorAll('.quiz-choice-btn').forEach(btn => {
+      optionsGrid.querySelectorAll('.exam-choice-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-          this.handleQuizAnswer(e.currentTarget.dataset.id);
+          this.handleExamAnswer(e.currentTarget.dataset.choice);
         });
       });
     }
-
-    // Auto play question sound
-    setTimeout(() => {
-      window.musicTools.playCurrentQuestionAudio();
-    }, 200);
   }
 
-  handleQuizAnswer(answerId) {
-    const result = window.musicTools.checkAnswer(answerId);
+  handleExamAnswer(selectedChoice) {
+    const result = window.abrsmQuizEngine.checkAnswer(selectedChoice);
     if (!result) return;
 
-    const feedbackEl = document.getElementById('quiz-feedback');
-    const nextBtn = document.getElementById('quiz-next-btn');
-    const scoreVal = document.getElementById('quiz-score-val');
-    const streakVal = document.getElementById('quiz-streak-val');
+    const scoreEl = document.getElementById('exam-score-val');
+    const streakEl = document.getElementById('exam-streak-val');
+    const explanationBox = document.getElementById('exam-explanation');
+    const nextBtn = document.getElementById('exam-next-btn');
 
-    if (scoreVal) scoreVal.textContent = result.score;
-    if (streakVal) streakVal.textContent = result.streak;
+    if (scoreEl) scoreEl.textContent = result.score;
+    if (streakEl) streakEl.textContent = `${result.streak} 🔥`;
 
-    // Highlight buttons
-    document.querySelectorAll('.quiz-choice-btn').forEach(btn => {
+    document.querySelectorAll('.exam-choice-btn').forEach(btn => {
       btn.disabled = true;
-      if (btn.dataset.id === result.correctAnswer) {
+      if (btn.dataset.choice === result.correctAnswer) {
         btn.classList.add('correct');
-      } else if (btn.dataset.id === answerId && !result.isCorrect) {
+      } else if (btn.dataset.choice === selectedChoice && !result.isCorrect) {
         btn.classList.add('incorrect');
       }
     });
 
-    if (feedbackEl) {
-      feedbackEl.innerHTML = result.isCorrect 
-        ? `<span style="color: #34d399">✨ Spot on! That's correct! (+10 pts)</span>`
-        : `<span style="color: #fb7185">Not quite! The correct answer was highlighted in green.</span>`;
+    if (explanationBox) {
+      explanationBox.style.display = 'block';
+      explanationBox.innerHTML = `
+        <strong>${result.isCorrect ? '✨ Correct!' : '❌ Incorrect'}</strong>
+        <p style="margin-top: 0.35rem;">${result.explanation}</p>
+      `;
     }
 
-    if (nextBtn) {
-      nextBtn.style.display = 'inline-flex';
-    }
+    if (nextBtn) nextBtn.style.display = 'inline-flex';
   }
 }
 
-// Instantiate on DOM load
+// Bootstrap on DOM ready
 window.addEventListener('DOMContentLoaded', () => {
-  window.app = new MusicTheoryApp();
+  window.app = new AbrsmApp();
   window.app.init();
 });

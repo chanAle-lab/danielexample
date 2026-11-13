@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MusicTheory101 — Step-by-Step Interactive Music Theory</title>
-  <meta name="description" content="An interactive, audio-enabled music theory learning platform. Master scales, chords, intervals, the Circle of Fifths, and ear training with real-time sound.">
-  
-  <!-- Modern Google Fonts -->
+  <title>ABRSM Music Theory: Grades 1 to 5 — Complete Interactive Academy</title>
+  <meta name="description" content="Official ABRSM Music Theory Syllabus (Grades 1-5) interactive platform. Multi-clef stave, cadences, ornaments, orchestral instruments, terms glossary, and exam practice.">
+
+  <!-- Google Fonts: Inter & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,27 +18,33 @@
   <!-- Navigation Header -->
   <header class="app-header">
     <div class="header-container">
-      <a href="#" class="brand" onclick="window.app.switchTab('lessons'); return false;">
-        <span class="brand-icon">🎹</span>
+      <a href="#" class="brand" onclick="window.app.switchTab('syllabus'); return false;">
+        <span class="brand-icon">🏛️</span>
         <div>
-          <span class="brand-title">MusicTheory101</span>
-          <span class="brand-subtitle">Step-by-Step Interactive Theory</span>
+          <span class="brand-title">ABRSM Music Theory 101</span>
+          <span class="brand-subtitle">Complete Syllabus • Grades 1 to 5</span>
         </div>
       </a>
 
       <!-- Navigation Tabs -->
       <nav class="nav-tabs">
-        <button class="nav-tab-btn active" data-tab="lessons">
-          <span>📖</span> Lessons
+        <button class="nav-tab-btn active" data-tab="syllabus">
+          <span>🎓</span> Syllabus & Checklist
         </button>
-        <button class="nav-tab-btn" data-tab="circle">
-          <span>⭕</span> Circle of Fifths
+        <button class="nav-tab-btn" data-tab="stave-clefs">
+          <span>🎼</span> Stave & 4 Clefs
         </button>
-        <button class="nav-tab-btn" data-tab="tools">
-          <span>🛠️</span> Explorers & Tools
+        <button class="nav-tab-btn" data-tab="cadences">
+          <span>🎹</span> Cadences & Inversions
         </button>
-        <button class="nav-tab-btn" data-tab="quiz">
-          <span>🎧</span> Ear Training
+        <button class="nav-tab-btn" data-tab="terms">
+          <span>📖</span> Terms & Ornaments
+        </button>
+        <button class="nav-tab-btn" data-tab="orchestra">
+          <span>🎺</span> Orchestra & Transposition
+        </button>
+        <button class="nav-tab-btn" data-tab="exam">
+          <span>📝</span> Exam Trainer
         </button>
       </nav>
 
@@ -52,268 +58,299 @@
     </div>
   </header>
 
-  <!-- Master Page Container -->
+  <!-- Master Page Wrapper -->
   <main class="main-wrapper">
 
-    <!-- Sticky Piano Section (Available Across All Tabs) -->
-    <section class="sticky-piano-section">
-      <div class="piano-header">
-        <div class="piano-title">
-          <span>🎹</span> Interactive Piano Keyboard (Play with Click, Touch, or Computer Keys: A-K)
+    <!-- Grade Quick-Switcher Bar -->
+    <div class="grade-switcher-bar">
+      <div class="grade-banner-title">
+        <span>⭐</span> Select ABRSM Grade Level:
+      </div>
+      <div class="grade-pills">
+        <button class="grade-pill-btn active" data-grade="1">Grade 1</button>
+        <button class="grade-pill-btn" data-grade="2">Grade 2</button>
+        <button class="grade-pill-btn" data-grade="3">Grade 3</button>
+        <button class="grade-pill-btn" data-grade="4">Grade 4</button>
+        <button class="grade-pill-btn" data-grade="5">Grade 5</button>
+      </div>
+    </div>
+
+    <!-- Dual Interactive Center: Musical Stave & Virtual Piano -->
+    <section class="dual-interactive-section">
+      <div class="interactive-panel-header">
+        <div class="panel-title">
+          <span>🎼</span> Interactive Stave & Clef Reader
         </div>
-        <div class="piano-controls">
-          <label for="piano-label-mode" style="color: var(--text-muted);">Labels:</label>
-          <select id="piano-label-mode" class="label-mode-selector">
-            <option value="pitch">Pitch Names (C, D, E...)</option>
-            <option value="keyboard">Computer Keys (A, W, S...)</option>
-            <option value="none">Blank</option>
-          </select>
-          <button id="clear-piano-btn" class="btn btn-sm btn-secondary">Clear Highlights</button>
+        <div class="clef-switcher">
+          <button class="clef-btn active" data-clef="treble">Treble (G)</button>
+          <button class="clef-btn" data-clef="bass">Bass (F)</button>
+          <button class="clef-btn" data-clef="alto">Alto (C - Gr 4)</button>
+          <button class="clef-btn" data-clef="tenor">Tenor (C - Gr 5)</button>
         </div>
       </div>
 
+      <!-- Musical Stave SVG Viewer -->
+      <div class="stave-display-card">
+        <div id="main-stave-container"></div>
+      </div>
+
       <!-- Piano Keyboard Container -->
+      <div class="interactive-panel-header" style="margin-top: 1rem; margin-bottom: 0.5rem;">
+        <div class="panel-title" style="font-size: 0.85rem; color: var(--text-secondary);">
+          <span>🎹</span> Virtual Piano (Press keys to place note on Stave & play sound)
+        </div>
+        <button class="btn btn-sm btn-secondary" onclick="window.mainPiano.clearHighlights()">Clear Highlights</button>
+      </div>
       <div class="piano-keyboard-wrapper">
         <div id="main-piano-container"></div>
       </div>
     </section>
 
-    <!-- TAB 1: Step-by-Step Lessons -->
-    <section id="tab-lessons" class="tab-view active">
-      <div class="lessons-layout">
-        <!-- Sidebar Navigation -->
-        <aside class="lessons-sidebar">
-          <div class="sidebar-heading">Curriculum Modules</div>
-          <div class="lesson-list" id="lesson-nav-list">
-            <!-- Injected by app.js -->
-          </div>
-        </aside>
-
-        <!-- Lesson Content Area -->
-        <article class="lesson-content-card">
-          <div class="lesson-meta-header">
-            <span class="lesson-tag" id="lesson-current-tag">Fundamentals</span>
-            <div class="button-group">
-              <button id="prev-lesson-btn" class="btn btn-sm btn-secondary">← Previous</button>
-              <button id="next-lesson-btn" class="btn btn-sm btn-primary">Next Lesson →</button>
-            </div>
-          </div>
-          <div class="lesson-body" id="lesson-content-body">
-            <!-- Injected by app.js -->
-          </div>
-        </article>
+    <!-- TAB 1: ABRSM Syllabus & Checklist -->
+    <section id="tab-syllabus" class="tab-view active">
+      <div id="syllabus-content-area">
+        <!-- Injected dynamically by app.js based on selected grade -->
       </div>
-    </section>
 
-    <!-- TAB 2: Circle of Fifths -->
-    <section id="tab-circle" class="tab-view">
-      <div class="circle-view-header" style="margin-bottom: 1.5rem; text-align: center;">
-        <h2 style="font-family: var(--font-display); font-size: 2rem; color: #fff;">The Circle of Fifths</h2>
-        <p style="color: var(--text-secondary); max-width: 600px; margin: 0.5rem auto 0;">
-          Click any key on the wheel to inspect its sharps/flats, relative minor, diatonic chords, and chord progressions with real-time playback.
+      <!-- Technical Scale Degrees (Grades 4 & 5 Core Requirement) -->
+      <div style="margin-top: 2rem;">
+        <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #fff; margin-bottom: 0.25rem;">
+          Technical Names of the Diatonic Scale Degrees
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.875rem;">
+          Official ABRSM Grade 4 & 5 Requirement: Know both the number and technical name for all seven degrees.
         </p>
-      </div>
-      <div id="circle-of-fifths-container">
-        <!-- Injected by circle-of-fifths.js -->
+        <div class="technical-degrees-grid" id="technical-degrees-container">
+          <!-- Injected by app.js -->
+        </div>
       </div>
     </section>
 
-    <!-- TAB 3: Explorers & Tools (Scale, Chord, Metronome) -->
-    <section id="tab-tools" class="tab-view">
-      <div class="tools-grid">
-        <!-- Tool 1: Scale Explorer -->
-        <div class="tool-card">
-          <h3><span>🎼</span> Scale Explorer</h3>
-          <p class="tool-subtitle">Explore any scale formula, inspect notes, and hear them ascending.</p>
+    <!-- TAB 2: Stave & 4 Clefs Deep Dive -->
+    <section id="tab-stave-clefs" class="tab-view">
+      <div class="syllabus-overview-card">
+        <h2 class="grade-title-lg">The Four Musical Clefs & Middle C</h2>
+        <p class="syllabus-summary-p">
+          ABRSM progresses through four clefs from Grade 1 to Grade 5. Notice how <strong>Middle C (C4)</strong> is notated across each clef:
+        </p>
 
-          <div class="tool-form-group">
-            <label for="scale-root-select">Root Pitch:</label>
-            <select id="scale-root-select" class="form-select">
-              <option value="C">C</option>
-              <option value="C#">C♯ / D♭</option>
-              <option value="D">D</option>
-              <option value="D#">D♯ / E♭</option>
-              <option value="E">E</option>
-              <option value="F">F</option>
-              <option value="F#">F♯ / G♭</option>
-              <option value="G">G</option>
-              <option value="G#">G♯ / A♭</option>
-              <option value="A">A</option>
-              <option value="A#">A♯ / B♭</option>
-              <option value="B">B</option>
-            </select>
-          </div>
-
-          <div class="tool-form-group">
-            <label for="scale-type-select">Scale / Mode:</label>
-            <select id="scale-type-select" class="form-select">
-              <option value="major">Major (Ionian)</option>
-              <option value="minor">Natural Minor (Aeolian)</option>
-              <option value="harmonic_minor">Harmonic Minor</option>
-              <option value="melodic_minor">Melodic Minor</option>
-              <option value="dorian">Dorian Mode</option>
-              <option value="phrygian">Phrygian Mode</option>
-              <option value="lydian">Lydian Mode</option>
-              <option value="mixolydian">Mixolydian Mode</option>
-              <option value="pentatonic_major">Major Pentatonic</option>
-              <option value="pentatonic_minor">Minor Pentatonic</option>
-              <option value="blues">Blues Scale</option>
-            </select>
-          </div>
-
-          <div class="tool-result-display">
-            <strong style="font-size: 0.85rem; color: var(--text-secondary);">Scale Tones:</strong>
-            <div id="scale-notes-display" class="tool-result-notes"></div>
-          </div>
-
-          <button id="play-scale-btn" class="btn btn-primary" style="width: 100%;">
-            ▶ Play Scale Arpeggio
-          </button>
-        </div>
-
-        <!-- Tool 2: Chord Builder -->
-        <div class="tool-card">
-          <h3><span>🎹</span> Chord Builder</h3>
-          <p class="tool-subtitle">Build any triad, seventh chord, or inversion with immediate audio.</p>
-
-          <div class="tool-form-group">
-            <label for="chord-root-select">Root Pitch:</label>
-            <select id="chord-root-select" class="form-select">
-              <option value="C">C</option>
-              <option value="C#">C♯ / D♭</option>
-              <option value="D">D</option>
-              <option value="D#">D♯ / E♭</option>
-              <option value="E">E</option>
-              <option value="F">F</option>
-              <option value="F#">F♯ / G♭</option>
-              <option value="G">G</option>
-              <option value="G#">G♯ / A♭</option>
-              <option value="A">A</option>
-              <option value="A#">A♯ / B♭</option>
-              <option value="B">B</option>
-            </select>
-          </div>
-
-          <div class="tool-form-group">
-            <label for="chord-type-select">Chord Quality:</label>
-            <select id="chord-type-select" class="form-select">
-              <option value="major">Major Triad (1 - 3 - 5)</option>
-              <option value="minor">Minor Triad (1 - ♭3 - 5)</option>
-              <option value="diminished">Diminished Triad (1 - ♭3 - ♭5)</option>
-              <option value="augmented">Augmented Triad (1 - 3 - ♯5)</option>
-              <option value="dom7">Dominant 7th (1 - 3 - 5 - ♭7)</option>
-              <option value="maj7">Major 7th (1 - 3 - 5 - 7)</option>
-              <option value="min7">Minor 7th (1 - ♭3 - 5 - ♭7)</option>
-              <option value="m7b5">Half-Diminished (1 - ♭3 - ♭5 - ♭7)</option>
-              <option value="dim7">Diminished 7th (1 - ♭3 - ♭5 - 𝄫7)</option>
-              <option value="sus4">Sus4 (1 - 4 - 5)</option>
-              <option value="sus2">Sus2 (1 - 2 - 5)</option>
-            </select>
-          </div>
-
-          <div class="tool-form-group">
-            <label for="chord-inversion-select">Inversion:</label>
-            <select id="chord-inversion-select" class="form-select">
-              <option value="0">Root Position</option>
-              <option value="1">1st Inversion</option>
-              <option value="2">2nd Inversion</option>
-            </select>
-          </div>
-
-          <div class="tool-result-display">
-            <strong style="font-size: 0.85rem; color: var(--text-secondary);">Chord Notes:</strong>
-            <div id="chord-notes-display" class="tool-result-notes"></div>
-          </div>
-
-          <div class="button-group">
-            <button id="play-chord-btn" class="btn btn-accent" style="flex: 1;">▶ Play Block Chord</button>
-            <button id="play-chord-arp-btn" class="btn btn-secondary" style="flex: 1;">▶ Arpeggio</button>
-          </div>
-        </div>
-
-        <!-- Tool 3: Metronome & Rhythm Trainer -->
-        <div class="tool-card">
-          <h3><span>⏱️</span> Metronome & Tempo</h3>
-          <p class="tool-subtitle">Practice rhythm and internal pulse with high precision audio clicks.</p>
-
-          <div class="metronome-visualizer">
-            <div id="metronome-beat-indicator" class="beat-light"></div>
-            <div class="metronome-bpm-display">
-              <span id="bpm-val">100</span> <span style="font-size: 1rem; color: var(--text-muted); font-weight: 500;">BPM</span>
-            </div>
-            <div id="metronome-beat-counter" style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 600;">
-              Beat 1 of 4
+        <div class="checklist-grid" style="margin-top: 1rem;">
+          <div class="checklist-item">
+            <div>
+              <strong style="color: var(--abrsm-gold);">1. Treble Clef (G Clef)</strong> - <em>Grade 1+</em>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+                Curls around line 2 (G4). Middle C sits on the <strong>first ledger line below</strong> the stave.
+              </p>
+              <button class="btn btn-sm btn-secondary" style="margin-top: 0.5rem;" onclick="window.app.setClef('treble')">Switch Stave to Treble</button>
             </div>
           </div>
 
-          <div class="tool-form-group">
-            <div class="metronome-slider-row">
-              <span style="font-size: 0.8rem; color: var(--text-muted);">40</span>
-              <input type="range" id="metronome-bpm" class="metronome-slider" min="40" max="220" value="100">
-              <span style="font-size: 0.8rem; color: var(--text-muted);">220</span>
+          <div class="checklist-item">
+            <div>
+              <strong style="color: var(--abrsm-gold);">2. Bass Clef (F Clef)</strong> - <em>Grade 1+</em>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+                Dots enclose line 4 (F3). Middle C sits on the <strong>first ledger line above</strong> the stave.
+              </p>
+              <button class="btn btn-sm btn-secondary" style="margin-top: 0.5rem;" onclick="window.app.setClef('bass')">Switch Stave to Bass</button>
             </div>
           </div>
 
-          <div class="tool-form-group">
-            <label for="metronome-meter">Time Signature:</label>
-            <select id="metronome-meter" class="form-select">
-              <option value="4">4/4 (Common Time)</option>
-              <option value="3">3/4 (Waltz Time)</option>
-              <option value="2">2/4 (March Time)</option>
-              <option value="6">6/8 (Compound Time)</option>
-            </select>
+          <div class="checklist-item">
+            <div>
+              <strong style="color: var(--accent-cyan);">3. Alto Clef (C Clef)</strong> - <em>Grade 4+</em>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+                Center arrow points directly to <strong>line 3 (middle line)</strong> which is Middle C (C4). Standard clef for the Viola.
+              </p>
+              <button class="btn btn-sm btn-secondary" style="margin-top: 0.5rem;" onclick="window.app.setClef('alto')">Switch Stave to Alto</button>
+            </div>
           </div>
 
-          <div class="button-group">
-            <button id="metronome-toggle-btn" class="btn btn-primary" style="flex: 1.5;">▶ Start Metronome</button>
-            <button id="tap-tempo-btn" class="btn btn-secondary" style="flex: 1;">Tap Tempo</button>
+          <div class="checklist-item">
+            <div>
+              <strong style="color: var(--accent-purple);">4. Tenor Clef (C Clef)</strong> - <em>Grade 5+</em>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+                Center arrow points to <strong>line 4</strong> which is Middle C (C4). Used for upper registers of Cello, Bassoon, and Trombone.
+              </p>
+              <button class="btn btn-sm btn-secondary" style="margin-top: 0.5rem;" onclick="window.app.setClef('tenor')">Switch Stave to Tenor</button>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 4: Ear Training & Quizzes -->
-    <section id="tab-quiz" class="tab-view">
-      <div class="quiz-container">
-        <div class="quiz-header">
-          <div>
-            <h3 style="font-size: 1.5rem; color: #fff;">Ear Training Trainer</h3>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">Identify intervals, chords, and notes by ear.</p>
-          </div>
-          <div class="quiz-stats">
-            <div class="stat-item">
-              <span class="stat-label">Score</span>
-              <span class="stat-val" id="quiz-score-val">0</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Streak</span>
-              <span class="stat-val" id="quiz-streak-val">0 🔥</span>
-            </div>
-          </div>
+    <!-- TAB 3: Cadences & Inversions (Grade 5 Core) -->
+    <section id="tab-cadences" class="tab-view">
+      <div class="syllabus-overview-card">
+        <h2 class="grade-title-lg">ABRSM Cadences & Chord Inversions (Grade 5)</h2>
+        <p class="syllabus-summary-p">
+          In Grade 5, candidates identify <strong>Perfect</strong>, <strong>Plagal</strong>, and <strong>Imperfect</strong> cadences, and chord inversions: Root position (a / 5-3), First inversion (b / 6-3), and Second inversion (c / 6-4).
+        </p>
+
+        <!-- Cadences Grid -->
+        <div class="cadences-grid" id="cadences-container">
+          <!-- Injected by app.js -->
         </div>
 
-        <div class="tool-form-group" style="max-width: 320px; margin: 0 auto 1.5rem;">
-          <label for="quiz-type-select" style="text-align: center;">Training Category:</label>
-          <select id="quiz-type-select" class="form-select">
-            <option value="interval">Interval Recognition (m2 to Octave)</option>
-            <option value="chord">Chord Quality (Major, Minor, Dim, Aug)</option>
-            <option value="note">Pitch Ear Test (Natural Notes)</option>
+        <!-- Inversion Formulas Table -->
+        <div style="margin-top: 2rem;">
+          <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.75rem;">ABRSM Inversion Symbols (a, b, c):</h3>
+          <div style="overflow-x: auto;">
+            <table class="glossary-table">
+              <thead>
+                <tr>
+                  <th>Inversion</th>
+                  <th>Symbol</th>
+                  <th>Bass Note</th>
+                  <th>Intervals Above Bass</th>
+                  <th>Example (C Major)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Root Position</strong></td>
+                  <td><strong>a</strong> (or 5/3)</td>
+                  <td>Root (C)</td>
+                  <td>3rd and 5th</td>
+                  <td>C in bass (C - E - G)</td>
+                </tr>
+                <tr>
+                  <td><strong>First Inversion</strong></td>
+                  <td><strong>b</strong> (or 6/3 / 6)</td>
+                  <td>Third (E)</td>
+                  <td>3rd and 6th</td>
+                  <td>E in bass (E - G - C)</td>
+                </tr>
+                <tr>
+                  <td><strong>Second Inversion</strong></td>
+                  <td><strong>c</strong> (or 6/4)</td>
+                  <td>Fifth (G)</td>
+                  <td>4th and 6th</td>
+                  <td>G in bass (G - C - E)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Terms, Signs & Ornaments -->
+    <section id="tab-terms" class="tab-view">
+      <div class="syllabus-overview-card">
+        <h2 class="grade-title-lg">ABRSM Terms, Signs & Ornaments (Grades 1–5)</h2>
+        <p class="syllabus-summary-p">
+          Search the complete official vocabulary list across Italian, French, and German performance directions and ornaments.
+        </p>
+
+        <!-- Ornaments Visual & Audio Player -->
+        <h3 style="color: var(--abrsm-gold); font-size: 1.25rem; margin-bottom: 0.5rem;">
+          Ornaments (Grades 4 & 5 Core Requirement):
+        </h3>
+        <div class="ornaments-grid" id="ornaments-container">
+          <!-- Injected by app.js -->
+        </div>
+
+        <!-- Glossary Controls -->
+        <div class="glossary-controls" style="margin-top: 2rem;">
+          <input type="text" id="glossary-search" class="glossary-search-input" placeholder="🔍 Search term, translation, or category (e.g. Allegro, Dolce, Staccato)...">
+          <select id="glossary-grade-filter" class="form-select" style="max-width: 200px;">
+            <option value="all">All Grades (1 to 5)</option>
+            <option value="1">Grade 1 Only</option>
+            <option value="2">Grade 2 Only</option>
+            <option value="3">Grade 3 Only</option>
+            <option value="4">Grade 4 Only</option>
+            <option value="5">Grade 5 Only</option>
           </select>
         </div>
 
-        <div class="quiz-card">
-          <div class="quiz-prompt" id="quiz-prompt">Listen to the audio and choose the correct answer:</div>
-          <button id="quiz-play-audio-btn" class="btn btn-primary quiz-play-btn">
-            🔊 Replay Sound
-          </button>
+        <div style="overflow-x: auto;">
+          <table class="glossary-table">
+            <thead>
+              <tr>
+                <th>Term</th>
+                <th>English Meaning</th>
+                <th>Category</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
+            <tbody id="glossary-table-body">
+              <!-- Injected by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-          <div class="quiz-options-grid" id="quiz-options">
+    <!-- TAB 5: Orchestral Instruments & Transposition -->
+    <section id="tab-orchestra" class="tab-view">
+      <div class="syllabus-overview-card">
+        <h2 class="grade-title-lg">Standard Orchestral Instruments & Transposition (Grades 4 & 5)</h2>
+        <p class="syllabus-summary-p">
+          ABRSM questions test instrument families, sound generation mechanisms, standard clefs, and transposition to/from concert pitch for instruments in B♭, A, and F.
+        </p>
+
+        <!-- Transposition Rule Banner -->
+        <div class="callout-box" style="margin-bottom: 1.5rem;">
+          <strong style="color: var(--abrsm-gold); font-size: 1.05rem;">Master Transposition Rule:</strong>
+          <ul style="margin-top: 0.5rem; margin-left: 1.25rem; color: var(--text-primary);">
+            <li><strong>Instrument in B♭</strong> (Clarinet in B♭, Trumpet in B♭): Sounds a <strong>Major 2nd lower</strong> than written. (To write for it: transpose UP a Major 2nd).</li>
+            <li><strong>Instrument in A</strong> (Clarinet in A): Sounds a <strong>Minor 3rd lower</strong> than written. (To write for it: transpose UP a Minor 3rd).</li>
+            <li><strong>Instrument in F</strong> (French Horn in F, Cor Anglais): Sounds a <strong>Perfect 5th lower</strong> than written. (To write for it: transpose UP a Perfect 5th).</li>
+          </ul>
+        </div>
+
+        <div class="orchestra-grid" id="orchestra-container">
+          <!-- Injected by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: ABRSM Exam Trainer -->
+    <section id="tab-exam" class="tab-view">
+      <div class="exam-container">
+        <div class="exam-meta-bar">
+          <div>
+            <h3 style="font-size: 1.4rem; color: #fff;">ABRSM Exam Practice Simulator</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Authentic questions matching ABRSM online & paper exam formats.</p>
+          </div>
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <div style="text-align: right;">
+              <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Score</span>
+              <div id="exam-score-val" style="font-size: 1.25rem; font-weight: 800; color: var(--abrsm-gold);">0</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Streak</span>
+              <div id="exam-streak-val" style="font-size: 1.25rem; font-weight: 800; color: var(--abrsm-crimson);">0 🔥</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grade Filter for Practice -->
+        <div style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+          <label for="exam-grade-selector" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Practice Level:</label>
+          <select id="exam-grade-selector" class="form-select" style="max-width: 220px;">
+            <option value="all">All Grades (1 to 5)</option>
+            <option value="1">Grade 1 Exam Questions</option>
+            <option value="2">Grade 2 Exam Questions</option>
+            <option value="3">Grade 3 Exam Questions</option>
+            <option value="4">Grade 4 Exam Questions</option>
+            <option value="5">Grade 5 Exam Questions</option>
+          </select>
+        </div>
+
+        <div class="exam-question-card">
+          <div class="exam-category-badge" id="exam-question-category">Grade 1 • Time Signatures</div>
+          <div class="exam-prompt-text" id="exam-question-prompt">
+            Loading question...
+          </div>
+
+          <div class="exam-options-grid" id="exam-options-container">
             <!-- Injected by app.js -->
           </div>
 
-          <div class="quiz-feedback" id="quiz-feedback"></div>
+          <div class="exam-explanation-box" id="exam-explanation" style="display: none;"></div>
 
-          <button id="quiz-next-btn" class="btn btn-accent" style="display: none; margin-top: 1rem;">
+          <button id="exam-next-btn" class="btn btn-gold" style="display: none; margin-top: 1.25rem;">
             Next Question →
           </button>
         </div>
@@ -324,7 +361,7 @@
 
   <!-- Application Footer -->
   <footer class="app-footer">
-    <p><strong>MusicTheory101</strong> — Open-source music theory resource built for learners and creators.</p>
+    <p><strong>ABRSM Music Theory 101</strong> — Comprehensive Grade 1 to 5 Syllabus Interactive Academy.</p>
     <p style="margin-top: 0.5rem;">
       Repository: <a href="https://github.com/chanAle-lab/MusicTheory101" target="_blank" rel="noopener">github.com/chanAle-lab/MusicTheory101</a> |
       Live Site: <a href="https://chanale-lab.github.io/MusicTheory101/" target="_blank" rel="noopener">chanale-lab.github.io/MusicTheory101</a>
@@ -334,7 +371,9 @@
   <!-- Scripts -->
   <script src="audio.js"></script>
   <script src="piano.js"></script>
-  <script src="lessons.js"></script>
+  <script src="stave.js"></script>
+  <script src="abrsm-data.js"></script>
+  <script src="abrsm-quiz.js"></script>
   <script src="circle-of-fifths.js"></script>
   <script src="tools.js"></script>
   <script src="app.js"></script>
