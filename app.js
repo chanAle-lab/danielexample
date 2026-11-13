@@ -86,15 +86,6 @@ class AbrsmApp {
       });
     });
 
-    // Header Grade Switcher Dropdown
-    const headerGradeSelect = document.getElementById('header-grade-select');
-    if (headerGradeSelect) {
-      headerGradeSelect.addEventListener('change', (e) => {
-        const grade = parseInt(e.target.value, 10);
-        this.setGrade(grade);
-      });
-    }
-
     // Clef Switchers (Centerpiece)
     document.querySelectorAll('.clef-tab-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -168,13 +159,7 @@ class AbrsmApp {
     const brandBadge = document.getElementById('brand-grade-badge');
     if (brandBadge) brandBadge.textContent = `Grade ${gradeNum}`;
 
-    // 2. Sync Header Grade Select Dropdown
-    const headerSelect = document.getElementById('header-grade-select');
-    if (headerSelect && headerSelect.value !== String(gradeNum)) {
-      headerSelect.value = String(gradeNum);
-    }
-
-    // 3. Update Grade Switcher Pills & Status Banner
+    // 2. Update Grade Switcher Pills & Status Banner
     document.querySelectorAll('.grade-pill').forEach(btn => {
       const g = parseInt(btn.dataset.grade, 10);
       btn.classList.toggle('active', g === gradeNum);
