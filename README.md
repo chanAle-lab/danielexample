@@ -49,7 +49,9 @@ This web application covers every single point mandated by the **Associated Boar
 
 ---
 
-## 🛠️ Interactive Features
+## 🛠️ Progressive Grade Learning Architecture
+- **🎯 Grade 1 First Focus**: Visitors start cleanly in **Grade 1** mode with zero cognitive overwhelm. The hero, syllabus checklist, note flashcards, piano reference keys, glossary, and exam simulator are tailored strictly to Grade 1.
+- **🚀 Seamless Progression (Grades 1 to 5)**: Switch to Grade 2, Grade 3, Grade 4, or Grade 5 via the header switcher, the progression bar, or the "Advance to Next Grade" callout cards at any point.
 - **🎼 Multi-Clef Stave Engine (SVG)**: Dynamically renders Treble, Bass, Alto, and Tenor clefs, ledger lines, and notes.
 - **🃏 Grade 1 Syllabus Flashcards (3D Flipping)**: Comprehensive interactive revision deck covering the complete Grade 1 syllabus checklist:
   - Note values, rests, single dots, and tied notes with custom SVG notation.

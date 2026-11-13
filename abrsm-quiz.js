@@ -5,7 +5,7 @@
 
 class AbrsmQuizEngine {
   constructor() {
-    this.selectedGrade = 'all'; // 'all', 1, 2, 3, 4, 5
+    this.selectedGrade = 1; // Default to Grade 1 foundation
     this.currentQuestion = null;
     this.score = 0;
     this.streak = 0;
@@ -52,6 +52,62 @@ class AbrsmQuizEngine {
         options: ['At a walking pace', 'Very fast', 'Slow and solemn', 'Gradually getting louder'],
         answer: 'At a walking pace',
         explanation: 'Andante comes from the Italian "andare" (to walk), meaning at a medium walking tempo.'
+      },
+      {
+        grade: 1,
+        category: 'Keys & Scales',
+        question: 'Which notes form the tonic triad in root position for G Major?',
+        options: ['G – B – D', 'G – C – E', 'D – F♯ – A', 'G – B♭ – D'],
+        answer: 'G – B – D',
+        explanation: 'The tonic triad of G Major is built on scale degrees 1, 3, and 5: G (root), B (3rd), and D (5th).'
+      },
+      {
+        grade: 1,
+        category: 'Time Signatures',
+        question: 'What does the time signature symbol "C" (Common Time) represent in music theory?',
+        options: ['4/4 time (four crotchet beats per bar)', '2/2 time', '3/4 time', '6/8 time'],
+        answer: '4/4 time (four crotchet beats per bar)',
+        explanation: 'The symbol "C" stands for Common Time, which is exactly equivalent to 4/4 (four crotchet beats per bar).'
+      },
+      {
+        grade: 1,
+        category: 'Rests & Note Values',
+        question: 'How many semiquavers (16th notes) equal the value of one crotchet (quarter note)?',
+        options: ['4 semiquavers', '2 semiquavers', '8 semiquavers', '16 semiquavers'],
+        answer: '4 semiquavers',
+        explanation: '1 crotchet = 2 quavers = 4 semiquavers.'
+      },
+      {
+        grade: 1,
+        category: 'Rests & Stave',
+        question: 'Which rest is written as a solid black rectangle hanging DOWN from the 4th line of the stave?',
+        options: ['Semibreve rest (whole measure rest)', 'Minim rest', 'Crotchet rest', 'Quaver rest'],
+        answer: 'Semibreve rest (whole measure rest)',
+        explanation: 'A Semibreve rest hangs down from line 4. (A Minim rest sits UP on line 3).'
+      },
+      {
+        grade: 1,
+        category: 'Accidentals',
+        question: 'What is the function of a natural sign (♮) in front of a note?',
+        options: ['Cancels a previous sharp or flat', 'Raises the pitch by a semitone', 'Lowers the pitch by a semitone', 'Doubles the note duration'],
+        answer: 'Cancels a previous sharp or flat',
+        explanation: 'A natural sign (♮) cancels any preceding sharp or flat, returning the note to its natural pitch.'
+      },
+      {
+        grade: 1,
+        category: 'Performance Signs',
+        question: 'What does a dot placed directly above or below a notehead indicate to a performer?',
+        options: ['Staccato (play short and detached)', 'Hold the note longer (Fermata)', 'Accent the note loudly', 'Legato (play smoothly)'],
+        answer: 'Staccato (play short and detached)',
+        explanation: 'A dot above or below a note indicates staccato (detached). Do not confuse with a dot placed to the side, which lengthens duration by half.'
+      },
+      {
+        grade: 1,
+        category: 'Dynamics',
+        question: 'What is the meaning of the dynamic marking "pianissimo" (pp)?',
+        options: ['Very quiet', 'Moderately quiet', 'Very loud', 'Gradually getting quieter'],
+        answer: 'Very quiet',
+        explanation: 'Pianissimo (pp) translates as "very quiet" or "very soft".'
       },
 
       // --- GRADE 2 ---

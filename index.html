@@ -17,21 +17,33 @@
 
   <!-- Header -->
   <header class="site-header">
-    <a class="brand" href="#/" onclick="window.app && window.app.switchTab('syllabus'); return false;" aria-label="MusicTheory101 home">
+    <a class="brand" href="#/" onclick="window.app && window.app.setGrade(1); window.app && window.app.switchTab('syllabus'); return false;" aria-label="MusicTheory101 home">
       <span class="seal" aria-hidden="true">𝄞</span>
       <span>MusicTheory101</span>
+      <span class="brand-grade-badge" id="brand-grade-badge">Grade 1</span>
     </a>
 
-    <nav aria-label="Primary">
-      <a href="#/syllabus" class="active" data-tab="syllabus">Syllabus (1–5)</a>
+    <nav aria-label="Primary" id="header-primary-nav">
+      <a href="#/syllabus" class="active" data-tab="syllabus">Syllabus</a>
       <a href="#/flashcards" data-tab="flashcards">Flashcards</a>
-      <a href="#/cadences" data-tab="cadences">Cadences</a>
-      <a href="#/terms" data-tab="terms">Terms & Ornaments</a>
-      <a href="#/orchestra" data-tab="orchestra">Orchestra</a>
+      <a href="#/terms" data-tab="terms">Terms & Signs</a>
       <a href="#/exam" data-tab="exam">Exam Trainer</a>
+      <a href="#/cadences" data-tab="cadences" id="nav-cadences" style="display: none;">Cadences (Gr 5)</a>
+      <a href="#/orchestra" data-tab="orchestra" id="nav-orchestra" style="display: none;">Orchestra (Gr 4–5)</a>
     </nav>
 
     <div class="header-tools">
+      <div class="header-grade-switch" title="Switch Syllabus Grade">
+        <span class="header-grade-tag">Grade:</span>
+        <select id="header-grade-select" class="header-grade-select" aria-label="Switch Grade">
+          <option value="1" selected>Grade 1 (Current)</option>
+          <option value="2">Grade 2</option>
+          <option value="3">Grade 3</option>
+          <option value="4">Grade 4</option>
+          <option value="5">Grade 5</option>
+        </select>
+      </div>
+
       <div class="vol-control">
         <button id="mute-btn" class="btn-mute" title="Toggle Mute">🔊</button>
         <input type="range" id="master-volume" class="vol-slider" min="0" max="1" step="0.05" value="0.6" title="Volume">
@@ -45,44 +57,53 @@
     <!-- Hero Section -->
     <section class="hero">
       <div>
-        <div class="eyebrow">
-          <span>●</span> Official ABRSM Syllabus • Grades 1 to 5
+        <div class="eyebrow" id="hero-eyebrow">
+          <span>●</span> ABRSM Foundation • Grade 1 Curriculum
         </div>
-        <h1>Learn Music Theory from scratch, one clear grade at a time.</h1>
-        <p class="lede">
-          A free, comprehensive teaching and studying resource for musicians and students: multi-clef stave reader, cadence and chord builder, ornaments audio demo, terms glossary, and exam simulator.
+        <h1 id="hero-heading">Master Grade 1 Music Theory.</h1>
+        <p class="lede" id="hero-lede">
+          Start your music theory journey with a complete Grade 1 foundation: note values, rests, simple time signatures, Grand Staff pitch, C/G/D/F major scales, tonic triads, and Italian terms.
         </p>
-        <div class="hero-actions">
-          <button class="btn primary" onclick="window.app.loadGrade(1); window.app.switchTab('syllabus');">Start Grade 1</button>
-          <button class="btn outline" onclick="window.app.switchTab('flashcards');">Note Flashcards</button>
-          <button class="btn outline" onclick="window.app.switchTab('exam');">Take Practice Exam</button>
+        <div class="hero-actions" id="hero-actions">
+          <button class="btn primary" onclick="window.app.switchTab('flashcards');">🃏 Study Grade 1 Flashcards</button>
+          <button class="btn outline" onclick="window.app.switchTab('exam');">📝 Grade 1 Practice Exam</button>
+          <button class="btn outline" onclick="window.app.setGrade(2);" id="hero-next-grade-btn">Advance to Grade 2 →</button>
         </div>
       </div>
 
       <div class="hero-stave-card">
         <div class="hero-stave-title">
-          <span>Note Flashcards & Audio</span>
+          <span id="hero-card-tag">Grade 1 Checklist</span>
           <span style="color: var(--color-accent); font-weight: 700;">Grand Staff</span>
         </div>
-        <p style="font-size: var(--text-xs); color: var(--color-muted); margin-bottom: var(--space-3);">
-          Interactive 3D flashcards featuring notes on the Grand Staff with audio playback and virtual piano guidance.
+        <p id="hero-card-desc" style="font-size: var(--text-xs); color: var(--color-muted); margin-bottom: var(--space-3);">
+          Interactive 3D flashcards featuring notes on the Grand Staff, note values & rests, simple time signatures, and Italian terms with audio.
         </p>
-        <div style="display: flex; gap: var(--space-2); margin-top: var(--space-2);">
+        <div style="display: flex; gap: var(--space-2); margin-top: var(--space-2); flex-wrap: wrap;">
           <button class="btn primary small" onclick="window.app.switchTab('flashcards')">🃏 Study Flashcards</button>
           <button class="btn outline small" onclick="window.app.switchTab('exam')">📝 Exam Trainer</button>
         </div>
       </div>
     </section>
 
-    <!-- Grade Picker Bar -->
-    <div class="grade-bar-wrapper">
-      <span class="grade-picker-label">Select Grade Syllabus:</span>
-      <div class="grade-pills">
-        <button class="grade-pill active" data-grade="1">Grade 1</button>
-        <button class="grade-pill" data-grade="2">Grade 2</button>
-        <button class="grade-pill" data-grade="3">Grade 3</button>
-        <button class="grade-pill" data-grade="4">Grade 4</button>
-        <button class="grade-pill" data-grade="5">Grade 5</button>
+    <!-- Grade Progression & Switcher Bar -->
+    <div class="grade-progression-bar">
+      <div class="grade-progression-info">
+        <div class="grade-progression-badge">
+          <span class="grade-dot"></span>
+          <strong id="progression-grade-title">Currently Viewing: ABRSM Grade 1 (Foundation)</strong>
+        </div>
+        <p class="grade-progression-sub" id="progression-grade-desc">
+          You are currently studying Grade 1. Click any grade below whenever you want to work on higher grades:
+        </p>
+      </div>
+
+      <div class="grade-pills" role="tablist" aria-label="Curriculum Grade Selector">
+        <button class="grade-pill active" data-grade="1"><span class="pill-number">1</span> Grade 1</button>
+        <button class="grade-pill" data-grade="2"><span class="pill-number">2</span> Grade 2</button>
+        <button class="grade-pill" data-grade="3"><span class="pill-number">3</span> Grade 3</button>
+        <button class="grade-pill" data-grade="4"><span class="pill-number">4</span> Grade 4</button>
+        <button class="grade-pill" data-grade="5"><span class="pill-number">5</span> Grade 5</button>
       </div>
     </div>
 
@@ -94,6 +115,17 @@
         </div>
         <button class="btn outline small" onclick="window.mainPiano.clearHighlights()">Clear Highlights</button>
       </div>
+
+      <div class="piano-grade-presets" id="piano-grade-presets">
+        <span class="piano-preset-label">Grade 1 Keys & Benchmarks:</span>
+        <button class="btn outline small" onclick="window.app.playBenchmark('C4')">Middle C (C4)</button>
+        <button class="btn outline small" onclick="window.app.playScale('C')">C Major Scale</button>
+        <button class="btn outline small" onclick="window.app.playScale('G')">G Major Scale (F♯)</button>
+        <button class="btn outline small" onclick="window.app.playScale('D')">D Major Scale (F♯, C♯)</button>
+        <button class="btn outline small" onclick="window.app.playScale('F')">F Major Scale (B♭)</button>
+        <button class="btn outline small" onclick="window.app.playChord(['C4','E4','G4'])">C Tonic Triad</button>
+      </div>
+
       <div class="piano-wrapper">
         <div id="main-piano-container"></div>
       </div>
@@ -105,8 +137,13 @@
         <!-- Injected dynamically by app.js -->
       </div>
 
+      <!-- Progression Next-Grade Banner -->
+      <div id="syllabus-progression-callout">
+        <!-- Injected by app.js -->
+      </div>
+
       <!-- Technical Scale Degrees (Grades 4 & 5 Core Requirement) -->
-      <div style="margin-top: var(--space-12);">
+      <div id="technical-degrees-section" style="margin-top: var(--space-12); display: none;">
         <div class="card-head">
           <div>
             <h2>Technical Names of the Diatonic Scale Degrees</h2>
@@ -253,23 +290,28 @@
         </div>
       </div>
 
-      <!-- Ornaments -->
-      <h3 style="margin-top: var(--space-6);">Ornaments (Grades 4 & 5 Core Requirement)</h3>
-      <div class="ornament-grid" id="ornaments-container">
-        <!-- Injected by app.js -->
+      <!-- Ornaments (Grades 4 & 5 Core Requirement) -->
+      <div id="ornaments-section" style="display: none; margin-top: var(--space-6);">
+        <h3>Ornaments (Grades 4 & 5 Core Requirement)</h3>
+        <p style="font-size: var(--text-xs); color: var(--color-muted); margin-bottom: var(--space-3);">
+          Listen to how ornamentation alters melodic lines in higher grade levels.
+        </p>
+        <div class="ornament-grid" id="ornaments-container">
+          <!-- Injected by app.js -->
+        </div>
       </div>
 
       <!-- Terms Glossary -->
-      <h3 style="margin-top: var(--space-10);">Terms & Signs Glossary (Grades 1 to 5)</h3>
+      <h3 style="margin-top: var(--space-8);" id="glossary-title">Terms & Signs Glossary (Grade 1)</h3>
       <div style="display: flex; gap: var(--space-3); margin-top: var(--space-4); flex-wrap: wrap;">
         <input type="text" id="glossary-search" placeholder="🔍 Search term or meaning (e.g. Allegro, Dolce, Staccato)..." style="flex: 1; min-width: 260px; padding: var(--space-2) var(--space-4); border: 1px solid var(--color-line); border-radius: var(--radius); font-size: var(--text-sm); background: var(--color-surface); color: var(--color-ink);" />
         <select id="glossary-grade-filter" style="padding: var(--space-2) var(--space-4); border: 1px solid var(--color-line); border-radius: var(--radius); font-size: var(--text-sm); background: var(--color-surface); color: var(--color-ink);">
-          <option value="all">All Grades (1 to 5)</option>
-          <option value="1">Grade 1 Terms</option>
+          <option value="1" selected>Grade 1 Terms</option>
           <option value="2">Grade 2 Terms</option>
           <option value="3">Grade 3 Terms</option>
           <option value="4">Grade 4 Terms</option>
           <option value="5">Grade 5 Terms</option>
+          <option value="all">All Grades (1 to 5)</option>
         </select>
       </div>
 
@@ -339,12 +381,12 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
           <span class="tag" id="exam-question-category">Grade 1 • Time Signatures</span>
           <select id="exam-grade-selector" style="padding: var(--space-1) var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius); font-size: var(--text-xs); background: var(--color-surface); color: var(--color-ink);">
-            <option value="all">All Grades (1–5)</option>
-            <option value="1">Grade 1 Questions</option>
+            <option value="1" selected>Grade 1 Questions</option>
             <option value="2">Grade 2 Questions</option>
             <option value="3">Grade 3 Questions</option>
             <option value="4">Grade 4 Questions</option>
             <option value="5">Grade 5 Questions</option>
+            <option value="all">All Grades (1–5)</option>
           </select>
         </div>
 
