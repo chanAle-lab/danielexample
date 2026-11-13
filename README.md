@@ -51,6 +51,7 @@ This web application covers every single point mandated by the **Associated Boar
 
 ## 🛠️ Interactive Features
 - **🎼 Multi-Clef Stave Engine (SVG)**: Dynamically renders Treble, Bass, Alto, and Tenor clefs, ledger lines, and notes.
+- **🃏 Interactive Note Flashcards (3D Flipping)**: Notes on stave on the front with live audio playback, note name, stave position, and virtual piano guidance on the back.
 - **🎹 Integrated Virtual Piano**: Bidirectionally syncs with the stave and audio engine.
 - **🏛️ Cadences & Inversions Audio Player**: Audition harmonic progressions in multiple keys.
 - **📖 Searchable Terms & Signs Glossary**: Comprehensive Italian, French, and German musical terminology dictionary with Grade 1–5 filters.

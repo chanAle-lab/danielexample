@@ -45,7 +45,27 @@ class AbrsmApp {
     // 5. Initialize Exam Practice Simulator
     this.initExamTrainer();
 
-    // 6. Bind Global Navigation Events
+    // 6. Initialize Flashcards Engine
+    if (window.NoteFlashcardsEngine) {
+      this.flashcards = new NoteFlashcardsEngine();
+      window.flashcardsEngine = this.flashcards;
+
+      const clefSelect = document.getElementById('flashcard-clef-select');
+      const diffSelect = document.getElementById('flashcard-diff-select');
+
+      if (clefSelect) {
+        clefSelect.addEventListener('change', (e) => {
+          this.flashcards.setClefFilter(e.target.value);
+        });
+      }
+      if (diffSelect) {
+        diffSelect.addEventListener('change', (e) => {
+          this.flashcards.setDifficultyFilter(e.target.value);
+        });
+      }
+    }
+
+    // 7. Bind Global Navigation Events
     this.bindEvents();
   }
 
@@ -118,6 +138,10 @@ class AbrsmApp {
     // Trigger first question if switching to exam
     if (tabId === 'exam' && !window.abrsmQuizEngine.currentQuestion) {
       this.nextExamQuestion();
+    }
+
+    if (tabId === 'flashcards' && this.flashcards) {
+      this.flashcards.renderCurrentCard();
     }
 
     // Scroll to main content smoothly

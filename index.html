@@ -24,6 +24,7 @@
 
     <nav aria-label="Primary">
       <a href="#/syllabus" class="active" data-tab="syllabus">Syllabus (1–5)</a>
+      <a href="#/flashcards" data-tab="flashcards">Flashcards</a>
       <a href="#/stave" data-tab="stave-clefs">Stave & Clefs</a>
       <a href="#/cadences" data-tab="cadences">Cadences</a>
       <a href="#/terms" data-tab="terms">Terms & Ornaments</a>
@@ -54,6 +55,7 @@
         </p>
         <div class="hero-actions">
           <button class="btn primary" onclick="window.app.loadGrade(1); window.app.switchTab('syllabus');">Start Grade 1</button>
+          <button class="btn outline" onclick="window.app.switchTab('flashcards');">Note Flashcards</button>
           <button class="btn outline" onclick="window.app.switchTab('exam');">Take Practice Exam</button>
         </div>
       </div>
@@ -137,6 +139,75 @@
         </div>
         <div class="grid-3" id="technical-degrees-container" style="margin-top: var(--space-4);">
           <!-- Injected by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: Note Flashcards -->
+    <section id="tab-flashcards" class="tab-view">
+      <div class="flashcards-container">
+        <div class="card-head" style="margin-bottom: var(--space-4);">
+          <div>
+            <h2>Note Flashcards</h2>
+            <p style="color: var(--color-muted); font-size: var(--text-sm); margin-top: var(--space-1);">
+              Study notes on the stave on one side, and reveal the note name, position, and piano key on the other.
+            </p>
+          </div>
+          <span class="mono" id="flashcard-counter" style="font-weight: 700; color: var(--color-accent); font-size: var(--text-sm);">1 of 35</span>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="flashcard-filter-bar">
+          <div style="display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap;">
+            <select id="flashcard-clef-select" style="padding: var(--space-1) var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius); font-size: var(--text-xs); background: var(--color-surface); color: var(--color-ink);">
+              <option value="all">All Clefs (Treble, Bass, Alto, Tenor)</option>
+              <option value="treble">Treble Clef Only</option>
+              <option value="bass">Bass Clef Only</option>
+              <option value="alto">Alto Clef (Grade 4)</option>
+              <option value="tenor">Tenor Clef (Grade 5)</option>
+            </select>
+
+            <select id="flashcard-diff-select" style="padding: var(--space-1) var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius); font-size: var(--text-xs); background: var(--color-surface); color: var(--color-ink);">
+              <option value="all">All Note Types</option>
+              <option value="natural">Natural Notes (Stave Lines & Spaces)</option>
+              <option value="ledger">Notes with Ledger Lines</option>
+              <option value="accidental">Notes with Accidentals (♯ / ♭)</option>
+            </select>
+          </div>
+
+          <button class="btn outline small" id="flashcard-shuffle-btn" onclick="window.flashcardsEngine.shuffleDeck();">
+            🔀 Shuffle Deck
+          </button>
+        </div>
+
+        <!-- 3D Flipping Card Scene -->
+        <div class="flashcard-scene" onclick="window.flashcardsEngine.flipCard();">
+          <div class="flashcard-card" id="flashcard-card-element">
+            <!-- Injected by flashcards.js -->
+          </div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="flashcard-controls-bar">
+          <button class="btn outline" onclick="window.flashcardsEngine.prevCard();">
+            ← Previous
+          </button>
+          <button class="btn primary" onclick="window.flashcardsEngine.flipCard();">
+            Flip Card (Space)
+          </button>
+          <button class="btn outline" onclick="window.flashcardsEngine.nextCard();">
+            Next →
+          </button>
+        </div>
+
+        <!-- Study Tracker Bar -->
+        <div class="flashcard-study-bar">
+          <button class="btn outline small" style="color: var(--color-answer); border-color: rgba(46, 125, 94, 0.4);" onclick="window.flashcardsEngine.markKnown();">
+            ✓ Mark as Known (<span id="flashcard-known-count">0</span>)
+          </button>
+          <button class="btn outline small" style="color: var(--color-accent); border-color: rgba(184, 67, 47, 0.4);" onclick="window.flashcardsEngine.markReview();">
+            ↺ Review Again (<span id="flashcard-review-count">0</span>)
+          </button>
         </div>
       </div>
     </section>
@@ -396,6 +467,7 @@
   <script src="stave.js"></script>
   <script src="abrsm-data.js"></script>
   <script src="abrsm-quiz.js"></script>
+  <script src="flashcards.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
