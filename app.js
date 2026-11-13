@@ -6,7 +6,7 @@
 class AbrsmApp {
   constructor() {
     this.currentGrade = 1;
-    this.currentClef = 'treble';
+    this.currentClef = 'grand';
     this.currentTab = 'syllabus';
 
     this.stave = null;
@@ -203,9 +203,9 @@ class AbrsmApp {
     // Update available clefs for that grade
     document.querySelectorAll('.clef-tab-btn').forEach(btn => {
       const clef = btn.dataset.clef;
-      const isAllowed = data.clefs.includes(clef);
+      const isAllowed = clef === 'grand' || data.clefs.includes(clef);
       btn.style.opacity = isAllowed ? '1' : '0.4';
-      btn.title = isAllowed ? `${clef} clef` : `Introduced in Grade ${clef === 'alto' ? 4 : 5}`;
+      btn.title = isAllowed ? `${clef} view` : `Introduced in Grade ${clef === 'alto' ? 4 : 5}`;
     });
   }
 

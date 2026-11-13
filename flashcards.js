@@ -707,78 +707,139 @@ class NoteFlashcardsEngine {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // Use our MusicalStave engine to draw the card SVG cleanly
-    const width = 480;
-    const height = 150;
-    const startX = 30;
-    const endX = width - 30;
-    const topLineY = 45;
-    const lineSpacing = 12;
+    const width = 500;
+    const height = 185;
+    const startX = 46;
+    const endX = width - 24;
+    const lineSpacing = 11;
 
-    const clefBottomLineStep = {
-      treble: 2,  // E4
-      bass: -10, // G2
-      alto: -4,  // F3
-      tenor: -6  // D3
-    };
+    // Treble stave lines (Top)
+    const trebleTopY = 22; // Lines at Y = 22, 33, 44, 55, 66 (Line 5 to Line 1)
+    const trebleBottomLineY = trebleTopY + 4 * lineSpacing; // 66 (Line 1 = E4)
 
+    // Bass stave lines (Bottom)
+    const bassTopY = 104; // Lines at Y = 104, 115, 126, 137, 148 (Line 5 to Line 1)
+    const bassBottomLineY = bassTopY + 4 * lineSpacing; // 148 (Line 1 = G2)
+
+    // Middle C line
+    const middleCY = 85;
+
+    let svg = `<svg viewBox="0 0 ${width} ${height}" class="flashcard-stave-svg grand-staff-card" xmlns="http://www.w3.org/2000/svg">`;
+
+    // 1. Classical Grand Staff Curly Brace {
+    svg += `
+      <path d="M 40 20 C 31 20, 27 38, 27 65 C 27 78, 20 85, 14 85 C 20 85, 27 92, 27 105 C 27 132, 31 150, 40 150 C 35 150, 30 132, 30 105 C 30 90, 23 87, 18 85 C 23 83, 30 80, 30 65 C 30 38, 35 20, 40 20 Z" fill="var(--color-ink)" />
+    `;
+
+    // 2. Left and Right Connecting Barlines
+    svg += `<line x1="${startX}" y1="${trebleTopY}" x2="${startX}" y2="${bassBottomLineY}" stroke="var(--color-ink)" stroke-width="2" />`;
+    svg += `<line x1="${endX}" y1="${trebleTopY}" x2="${endX}" y2="${bassBottomLineY}" stroke="var(--color-ink)" stroke-width="1.2" />`;
+
+    // 3. Treble Stave 5 Lines
+    for (let i = 0; i < 5; i++) {
+      const y = trebleTopY + i * lineSpacing;
+      svg += `<line x1="${startX}" y1="${y}" x2="${endX}" y2="${y}" stroke="var(--color-ink)" stroke-width="1.2" />`;
+    }
+
+    // 4. Bass Stave 5 Lines
+    for (let i = 0; i < 5; i++) {
+      const y = bassTopY + i * lineSpacing;
+      svg += `<line x1="${startX}" y1="${y}" x2="${endX}" y2="${y}" stroke="var(--color-ink)" stroke-width="1.2" />`;
+    }
+
+    // 5. Clef Glyphs on Grand Staff
+    const isTrebleCard = card.clef === 'treble';
+    const isBassCard = card.clef === 'bass';
+    const isAltoCard = card.clef === 'alto';
+    const isTenorCard = card.clef === 'tenor';
+
+    // Highlight active clef in accent color
+    const trebleColor = isTrebleCard ? 'var(--color-accent)' : 'var(--color-ink)';
+    const bassColor = isBassCard ? 'var(--color-accent)' : 'var(--color-ink)';
+
+    svg += `<text x="${startX + 8}" y="${trebleTopY + 38}" font-family="'Century Gothic', sans-serif" font-size="50" fill="${trebleColor}" user-select="none">𝄞</text>`;
+    svg += `<text x="${startX + 8}" y="${bassTopY + 33}" font-family="'Century Gothic', sans-serif" font-size="38" fill="${bassColor}" user-select="none">𝄢</text>`;
+
+    // If Alto or Tenor Clef card, display the C-clef indicator prominently
+    if (isAltoCard || isTenorCard) {
+      const cClefY = isAltoCard ? middleCY + 14 : middleCY + 22;
+      svg += `<text x="${startX + 50}" y="${cClefY}" font-family="'Century Gothic', sans-serif" font-size="36" fill="var(--color-accent)">𝄡</text>`;
+      svg += `<text x="${startX + 75}" y="${middleCY + 4}" font-size="10" fill="var(--color-accent)" font-weight="700">${isAltoCard ? 'Alto Clef (Line 3 = Middle C)' : 'Tenor Clef (Line 4 = Middle C)'}</text>`;
+    }
+
+    // 6. Calculate Note Position on Grand Staff
     const letters = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
     const p = card.pitch.charAt(0).toUpperCase();
     const letterIdx = letters.indexOf(p);
-    const step = (card.octave - 4) * 7 + letterIdx;
+    const step = (card.octave - 4) * 7 + letterIdx; // Step 0 = C4
 
-    const bottomLineStep = clefBottomLineStep[card.clef];
-    const stepsFromBottomLine = step - bottomLineStep;
-    const bottomLineY = topLineY + 4 * lineSpacing;
-    const noteY = bottomLineY - (stepsFromBottomLine * (lineSpacing / 2));
-    const noteX = width / 2 + 25;
+    const noteX = width / 2 + 35;
+    let noteY = middleCY;
+    let isStemUp = true;
+    let ledgerLines = '';
 
-    let svg = `<svg viewBox="0 0 ${width} ${height}" class="flashcard-stave-svg" xmlns="http://www.w3.org/2000/svg">`;
+    const halfStep = lineSpacing / 2; // 5.5px
 
-    // 5 Stave lines
-    for (let i = 0; i < 5; i++) {
-      const y = topLineY + i * lineSpacing;
-      svg += `<line x1="${startX}" y1="${y}" x2="${endX}" y2="${y}" stroke="var(--color-ink)" stroke-width="1.5" />`;
-    }
+    if (isBassCard || (!isTrebleCard && step < 0)) {
+      // Position on Bass stave
+      if (step === 0) {
+        // Middle C in bass clef (1 ledger line above bass stave)
+        noteY = middleCY;
+        isStemUp = true;
+        ledgerLines += `<line x1="${noteX - 15}" y1="${middleCY}" x2="${noteX + 15}" y2="${middleCY}" stroke="var(--color-ink)" stroke-width="1.8" />`;
+      } else {
+        // A3 is step -2 (Top line of bass = bassTopY)
+        // G2 is step -10 (Bottom line of bass = bassBottomLineY)
+        const stepsFromBottom = step - (-10);
+        noteY = bassBottomLineY - (stepsFromBottom * halfStep);
+        isStemUp = step < -6;
 
-    // Clef symbol
-    if (card.clef === 'treble') {
-      svg += `<text x="${startX + 10}" y="${topLineY + 42}" font-family="'Century Gothic', sans-serif" font-size="54" fill="var(--color-ink)">𝄞</text>`;
-    } else if (card.clef === 'bass') {
-      svg += `<text x="${startX + 10}" y="${topLineY + 36}" font-family="'Century Gothic', sans-serif" font-size="44" fill="var(--color-ink)">𝄢</text>`;
-    } else if (card.clef === 'alto') {
-      svg += `<text x="${startX + 10}" y="${topLineY + 38}" font-family="'Century Gothic', sans-serif" font-size="44" fill="var(--color-accent)">𝄡</text>`;
-    } else if (card.clef === 'tenor') {
-      svg += `<text x="${startX + 10}" y="${topLineY + 26}" font-family="'Century Gothic', sans-serif" font-size="44" fill="var(--color-accent)">𝄡</text>`;
-    }
+        // Ledger lines below bass line 1 (step -10)
+        if (step < -10) {
+          for (let s = -12; s >= step; s -= 2) {
+            const ly = bassBottomLineY - ((s - (-10)) * halfStep);
+            ledgerLines += `<line x1="${noteX - 14}" y1="${ly}" x2="${noteX + 14}" y2="${ly}" stroke="var(--color-ink)" stroke-width="1.5" />`;
+          }
+        }
+      }
+    } else {
+      // Position on Treble stave
+      if (step === 0) {
+        // Middle C in treble clef (1 ledger line below treble stave)
+        noteY = middleCY;
+        isStemUp = true;
+        ledgerLines += `<line x1="${noteX - 15}" y1="${middleCY}" x2="${noteX + 15}" y2="${middleCY}" stroke="var(--color-ink)" stroke-width="1.8" />`;
+      } else {
+        // E4 is step 2 (Bottom line of treble = trebleBottomLineY)
+        // F5 is step 10 (Top line of treble = trebleTopY)
+        const stepsFromBottom = step - 2;
+        noteY = trebleBottomLineY - (stepsFromBottom * halfStep);
+        isStemUp = step < 6;
 
-    // Ledger lines
-    const topLineStep = bottomLineStep + 8;
-    if (step < bottomLineStep) {
-      for (let s = bottomLineStep - 2; s >= step; s -= 2) {
-        const y = bottomLineY - ((s - bottomLineStep) * (lineSpacing / 2));
-        svg += `<line x1="${noteX - 16}" y1="${y}" x2="${noteX + 16}" y2="${y}" stroke="var(--color-ink)" stroke-width="1.5" />`;
+        // Ledger lines above treble line 5 (step 10)
+        if (step > 10) {
+          for (let s = 12; s <= step; s += 2) {
+            const ly = trebleBottomLineY - ((s - 2) * halfStep);
+            ledgerLines += `<line x1="${noteX - 14}" y1="${ly}" x2="${noteX + 14}" y2="${ly}" stroke="var(--color-ink)" stroke-width="1.5" />`;
+          }
+        }
       }
     }
-    if (step > topLineStep) {
-      for (let s = topLineStep + 2; s <= step; s += 2) {
-        const y = bottomLineY - ((s - bottomLineStep) * (lineSpacing / 2));
-        svg += `<line x1="${noteX - 16}" y1="${y}" x2="${noteX + 16}" y2="${y}" stroke="var(--color-ink)" stroke-width="1.5" />`;
-      }
-    }
 
-    // Accidental
+    // Render ledger lines
+    svg += ledgerLines;
+
+    // Accidental (sharp / flat)
     if (card.accidental) {
       const sym = card.accidental === '#' ? '♯' : '♭';
       svg += `<text x="${noteX - 18}" y="${noteY + 5}" font-size="20" fill="var(--color-accent)" text-anchor="middle" font-weight="bold">${sym}</text>`;
     }
 
-    // Notehead & stem
-    const isStemUp = step < (bottomLineStep + 4);
+    // Notehead and stem
     svg += `
       <g>
-        <ellipse cx="${noteX}" cy="${noteY}" rx="9" ry="6.2" transform="rotate(-20 ${noteX} ${noteY})" fill="var(--color-ink)" />
-        <line x1="${isStemUp ? noteX + 8 : noteX - 8}" y1="${noteY}" x2="${isStemUp ? noteX + 8 : noteX - 8}" y2="${isStemUp ? noteY - 38 : noteY + 38}" stroke="var(--color-ink)" stroke-width="2" />
+        <ellipse cx="${noteX}" cy="${noteY}" rx="8" ry="5.5" transform="rotate(-20 ${noteX} ${noteY})" fill="var(--color-ink)" />
+        <line x1="${isStemUp ? noteX + 7.5 : noteX - 7.5}" y1="${noteY}" x2="${isStemUp ? noteX + 7.5 : noteX - 7.5}" y2="${isStemUp ? noteY - 34 : noteY + 34}" stroke="var(--color-ink)" stroke-width="2" />
       </g>
     `;
 
