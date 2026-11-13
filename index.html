@@ -107,30 +107,6 @@
       </div>
     </div>
 
-    <!-- Interactive Virtual Piano -->
-    <section class="interactive-centerpiece">
-      <div class="centerpiece-head" style="margin-bottom: var(--space-3);">
-        <div class="centerpiece-title">
-          <span>🎹</span> Interactive Virtual Piano Keyboard
-        </div>
-        <button class="btn outline small" onclick="window.mainPiano.clearHighlights()">Clear Highlights</button>
-      </div>
-
-      <div class="piano-grade-presets" id="piano-grade-presets">
-        <span class="piano-preset-label">Grade 1 Keys & Benchmarks:</span>
-        <button class="btn outline small" onclick="window.app.playBenchmark('C4')">Middle C (C4)</button>
-        <button class="btn outline small" onclick="window.app.playScale('C')">C Major Scale</button>
-        <button class="btn outline small" onclick="window.app.playScale('G')">G Major Scale (F♯)</button>
-        <button class="btn outline small" onclick="window.app.playScale('D')">D Major Scale (F♯, C♯)</button>
-        <button class="btn outline small" onclick="window.app.playScale('F')">F Major Scale (B♭)</button>
-        <button class="btn outline small" onclick="window.app.playChord(['C4','E4','G4'])">C Tonic Triad</button>
-      </div>
-
-      <div class="piano-wrapper">
-        <div id="main-piano-container"></div>
-      </div>
-    </section>
-
     <!-- TAB 1: Syllabus & Checklist -->
     <section id="tab-syllabus" class="tab-view active">
       <div id="syllabus-content-area">

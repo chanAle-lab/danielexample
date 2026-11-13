@@ -24,16 +24,19 @@ class AbrsmApp {
       window.staveEngine = this;
     }
 
-    // 2. Initialize Interactive Piano Keyboard
-    this.piano = new InteractivePiano('main-piano-container', {
-      startOctave: 3,
-      octaves: 2,
-      includeHighC: true,
-      onNoteOn: (note) => {
-        this.displayPianoNoteOnStave(note);
-      }
-    });
-    window.mainPiano = this.piano;
+    // 2. Initialize Interactive Piano Keyboard if container present
+    const pianoContainer = document.getElementById('main-piano-container');
+    if (pianoContainer && window.InteractivePiano) {
+      this.piano = new InteractivePiano('main-piano-container', {
+        startOctave: 3,
+        octaves: 2,
+        includeHighC: true,
+        onNoteOn: (note) => {
+          this.displayPianoNoteOnStave(note);
+        }
+      });
+      window.mainPiano = this.piano;
+    }
 
     // 3. Render All Syllabus Sub-Sections
     this.renderCadences();

@@ -50,7 +50,7 @@ This web application covers every single point mandated by the **Associated Boar
 ---
 
 ## 🛠️ Progressive Grade Learning Architecture
-- **🎯 Grade 1 First Focus**: Visitors start cleanly in **Grade 1** mode with zero cognitive overwhelm. The hero, syllabus checklist, note flashcards, piano reference keys, glossary, and exam simulator are tailored strictly to Grade 1.
+- **🎯 Grade 1 First Focus**: Visitors start cleanly in **Grade 1** mode with zero cognitive overwhelm. The hero, syllabus checklist, note flashcards, audio synthesis, glossary, and exam simulator are tailored strictly to Grade 1.
 - **🚀 Seamless Progression (Grades 1 to 5)**: Switch to Grade 2, Grade 3, Grade 4, or Grade 5 via the header switcher, the progression bar, or the "Advance to Next Grade" callout cards at any point.
 - **🎼 Multi-Clef Stave Engine (SVG)**: Dynamically renders Treble, Bass, Alto, and Tenor clefs, ledger lines, and notes.
 - **🃏 Grade 1 Syllabus Flashcards (3D Flipping)**: Comprehensive interactive revision deck covering the complete Grade 1 syllabus checklist:
@@ -59,7 +59,6 @@ This web application covers every single point mandated by the **Associated Boar
   - Notes on the Grand Staff (Treble and Bass staves) with Middle C benchmark, sharps ($\sharp$), flats ($\flat$), and naturals ($\natural$).
   - Major scales (C, G, D, F), scale degree numbers (1–7), intervals above tonic, and tonic triads with sound synthesis.
   - Frequently used Italian performance terms, dynamics ($pp$ to $ff$), and articulation signs.
-- **🎹 Integrated Virtual Piano**: Bidirectionally syncs with the stave and audio engine.
 - **🏛️ Cadences & Inversions Audio Player**: Audition harmonic progressions in multiple keys.
 - **📖 Searchable Terms & Signs Glossary**: Comprehensive Italian, French, and German musical terminology dictionary with Grade 1–5 filters.
 - **📝 ABRSM Practice Exam Simulator**: Real exam questions with explanations and streak tracking.
