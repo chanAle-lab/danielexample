@@ -53,17 +53,10 @@ class AbrsmApp {
       this.flashcards = new NoteFlashcardsEngine();
       window.flashcardsEngine = this.flashcards;
 
-      const clefSelect = document.getElementById('flashcard-clef-select');
-      const diffSelect = document.getElementById('flashcard-diff-select');
-
-      if (clefSelect) {
-        clefSelect.addEventListener('change', (e) => {
-          this.flashcards.setClefFilter(e.target.value);
-        });
-      }
-      if (diffSelect) {
-        diffSelect.addEventListener('change', (e) => {
-          this.flashcards.setDifficultyFilter(e.target.value);
+      const catSelect = document.getElementById('flashcard-category-select');
+      if (catSelect) {
+        catSelect.addEventListener('change', (e) => {
+          this.flashcards.setCategoryFilter(e.target.value);
         });
       }
     }

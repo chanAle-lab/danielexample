@@ -127,9 +127,9 @@
       <div class="flashcards-container">
         <div class="card-head" style="margin-bottom: var(--space-4);">
           <div>
-            <h2>Note Flashcards</h2>
+            <h2>Grade 1 Syllabus Flashcards</h2>
             <p style="color: var(--color-muted); font-size: var(--text-sm); margin-top: var(--space-1);">
-              Study notes on the stave on one side, and reveal the note name, position, and piano key on the other.
+              Interactive study cards covering the complete ABRSM Grade 1 syllabus checklist: note values, rests, simple time signatures, Grand Staff notes, scales, triads, and Italian terms.
             </p>
           </div>
           <span class="mono" id="flashcard-counter" style="font-weight: 700; color: var(--color-accent); font-size: var(--text-sm);">1 of 35</span>
@@ -138,19 +138,13 @@
         <!-- Filter Controls -->
         <div class="flashcard-filter-bar">
           <div style="display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap;">
-            <select id="flashcard-clef-select" style="padding: var(--space-1) var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius); font-size: var(--text-xs); background: var(--color-surface); color: var(--color-ink);">
-              <option value="all">All Clefs (Treble, Bass, Alto, Tenor)</option>
-              <option value="treble">Treble Clef Only</option>
-              <option value="bass">Bass Clef Only</option>
-              <option value="alto">Alto Clef (Grade 4)</option>
-              <option value="tenor">Tenor Clef (Grade 5)</option>
-            </select>
-
-            <select id="flashcard-diff-select" style="padding: var(--space-1) var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius); font-size: var(--text-xs); background: var(--color-surface); color: var(--color-ink);">
-              <option value="all">All Note Types</option>
-              <option value="natural">Natural Notes (Stave Lines & Spaces)</option>
-              <option value="ledger">Notes with Ledger Lines</option>
-              <option value="accidental">Notes with Accidentals (♯ / ♭)</option>
+            <select id="flashcard-category-select" style="padding: var(--space-2) var(--space-4); border: 1.5px solid var(--color-line); border-radius: var(--radius); font-size: var(--text-sm); font-weight: 600; background: var(--color-surface); color: var(--color-ink);">
+              <option value="all">🌟 All Grade 1 Checklist (Complete Deck)</option>
+              <option value="values">⏳ Note Values, Rests & Ties (Semibreve to Semiquaver)</option>
+              <option value="time">⏱️ Simple Time Signatures (2/4, 3/4, 4/4, Common Time)</option>
+              <option value="notes">🎼 Notes on Grand Staff & Accidentals (Treble & Bass)</option>
+              <option value="scales">☀️ Major Scales & Tonic Triads (C, G, D, F Major)</option>
+              <option value="terms">📖 Frequently Used Italian Terms & Signs</option>
             </select>
           </div>
 

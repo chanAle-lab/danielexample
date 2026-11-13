@@ -51,7 +51,12 @@ This web application covers every single point mandated by the **Associated Boar
 
 ## 🛠️ Interactive Features
 - **🎼 Multi-Clef Stave Engine (SVG)**: Dynamically renders Treble, Bass, Alto, and Tenor clefs, ledger lines, and notes.
-- **🃏 Interactive Note Flashcards (3D Flipping)**: Notes on stave on the front with live audio playback, note name, stave position, and virtual piano guidance on the back.
+- **🃏 Grade 1 Syllabus Flashcards (3D Flipping)**: Comprehensive interactive revision deck covering the complete Grade 1 syllabus checklist:
+  - Note values, rests, single dots, and tied notes with custom SVG notation.
+  - Simple time signatures ($\frac{2}{4}$, $\frac{3}{4}$, $\frac{4}{4}$, and Common Time $\mathbf{C}$) with beat structures and grouping.
+  - Notes on the Grand Staff (Treble and Bass staves) with Middle C benchmark, sharps ($\sharp$), flats ($\flat$), and naturals ($\natural$).
+  - Major scales (C, G, D, F), scale degree numbers (1–7), intervals above tonic, and tonic triads with sound synthesis.
+  - Frequently used Italian performance terms, dynamics ($pp$ to $ff$), and articulation signs.
 - **🎹 Integrated Virtual Piano**: Bidirectionally syncs with the stave and audio engine.
 - **🏛️ Cadences & Inversions Audio Player**: Audition harmonic progressions in multiple keys.
 - **📖 Searchable Terms & Signs Glossary**: Comprehensive Italian, French, and German musical terminology dictionary with Grade 1–5 filters.
