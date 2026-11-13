@@ -1,6 +1,6 @@
 /**
  * ABRSM Music Theory 101 - Master Application Coordinator
- * Integrates Stave Engine, Piano, Syllabus Data, Cadences, Ornaments, Glossary, and Exam Trainer.
+ * Matching N1Mandarin Editorial Design: Rice Paper + Ink + Vermilion Seal
  */
 
 class AbrsmApp {
@@ -17,7 +17,7 @@ class AbrsmApp {
     // 1. Initialize Musical Stave Engine
     this.stave = new MusicalStave('main-stave-container', {
       clef: this.currentClef,
-      notes: [{ pitch: 'C', octave: 4, accidental: null }] // Start on Middle C
+      notes: [{ pitch: 'C', octave: 4, accidental: null }] // Middle C
     });
     window.staveEngine = this;
 
@@ -27,23 +27,22 @@ class AbrsmApp {
       octaves: 2,
       includeHighC: true,
       onNoteOn: (note) => {
-        // Sync piano key press to Musical Stave
         this.displayPianoNoteOnStave(note);
       }
     });
     window.mainPiano = this.piano;
 
-    // 3. Render Grade 1 Syllabus initially
+    // 3. Render Grade 1 Syllabus
     this.loadGrade(1);
 
-    // 4. Render Cadences & Ornaments
+    // 4. Render All Syllabus Sections
     this.renderCadences();
     this.renderOrnaments();
     this.renderTechnicalDegrees();
     this.renderOrchestralInstruments();
     this.renderGlossary();
 
-    // 5. Initialize Exam Practice
+    // 5. Initialize Exam Practice Simulator
     this.initExamTrainer();
 
     // 6. Bind Global Navigation Events
@@ -51,24 +50,25 @@ class AbrsmApp {
   }
 
   bindEvents() {
-    // Navigation Tabs
-    document.querySelectorAll('.nav-tab-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    // Top Navigation Links
+    document.querySelectorAll('.site-header nav a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
         const tab = e.currentTarget.dataset.tab;
         this.switchTab(tab);
       });
     });
 
-    // Grade Switcher Pills (Top Banner)
-    document.querySelectorAll('.grade-pill-btn').forEach(btn => {
+    // Grade Switcher Pills
+    document.querySelectorAll('.grade-pill').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const grade = parseInt(e.currentTarget.dataset.grade, 10);
         this.loadGrade(grade);
       });
     });
 
-    // Clef Switcher (Stave Panel)
-    document.querySelectorAll('.clef-btn').forEach(btn => {
+    // Clef Switchers (Centerpiece)
+    document.querySelectorAll('.clef-tab-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const clef = e.currentTarget.dataset.clef;
         this.setClef(clef);
@@ -91,7 +91,7 @@ class AbrsmApp {
       });
     }
 
-    // Glossary Search & Filter
+    // Glossary Filter Events
     const searchInput = document.getElementById('glossary-search');
     const gradeSelect = document.getElementById('glossary-grade-filter');
     if (searchInput) {
@@ -105,16 +105,25 @@ class AbrsmApp {
   switchTab(tabId) {
     this.currentTab = tabId;
 
-    document.querySelectorAll('.nav-tab-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.tab === tabId);
+    // Update Header Nav Links
+    document.querySelectorAll('.site-header nav a').forEach(link => {
+      link.classList.toggle('active', link.dataset.tab === tabId);
     });
 
+    // Update Tab Views
     document.querySelectorAll('.tab-view').forEach(view => {
       view.classList.toggle('active', view.id === `tab-${tabId}`);
     });
 
+    // Trigger first question if switching to exam
     if (tabId === 'exam' && !window.abrsmQuizEngine.currentQuestion) {
       this.nextExamQuestion();
+    }
+
+    // Scroll to main content smoothly
+    const mainEl = document.getElementById('main');
+    if (mainEl && window.scrollY > 300) {
+      mainEl.scrollIntoView({ behavior: 'smooth' });
     }
   }
 
@@ -122,7 +131,7 @@ class AbrsmApp {
     this.currentGrade = gradeNum;
 
     // Update pill states
-    document.querySelectorAll('.grade-pill-btn').forEach(btn => {
+    document.querySelectorAll('.grade-pill').forEach(btn => {
       const g = parseInt(btn.dataset.grade, 10);
       btn.classList.toggle('active', g === gradeNum);
     });
@@ -130,33 +139,35 @@ class AbrsmApp {
     const data = window.ABRSM_SYLLABUS[gradeNum];
     if (!data) return;
 
-    // Render Syllabus Overview Card
+    // Render Syllabus Overview Card (Paper card style)
     const container = document.getElementById('syllabus-content-area');
     if (container) {
       container.innerHTML = `
-        <div class="syllabus-overview-card">
-          <div class="syllabus-header-row">
+        <div class="paper-card">
+          <div class="card-head">
             <div>
-              <h2 class="grade-title-lg">${data.title}</h2>
-              <span class="grade-badge-tag">${data.badge}</span>
+              <span class="tag">${data.badge}</span>
+              <h2 style="font-size: var(--text-2xl); margin-top: var(--space-2);">${data.title}</h2>
             </div>
-            <div class="grade-quick-keys">
-              <strong style="color: var(--text-muted); font-size: 0.8rem;">REQUIRED KEYS:</strong>
-              <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.35rem;">
-                ${data.keys.map(k => `<span class="note-chip">${k}</span>`).join('')}
+            <div style="text-align: right;">
+              <span style="font-size: var(--text-xs); color: var(--color-muted); text-transform: uppercase; letter-spacing: .08em; display: block;">Required Keys</span>
+              <div style="display: flex; gap: var(--space-1); flex-wrap: wrap; justify-content: flex-end; margin-top: var(--space-1);">
+                ${data.keys.map(k => `<span class="tag" style="background: var(--color-surface); border: 1px solid var(--color-line); color: var(--color-ink);">${k}</span>`).join('')}
               </div>
             </div>
           </div>
 
-          <p class="syllabus-summary-p">${data.summary}</p>
+          <p style="color: var(--color-muted); font-size: var(--text-base); margin-block: var(--space-3) var(--space-5); max-width: 65ch;">
+            ${data.summary}
+          </p>
 
-          <h3 style="font-size: 1.1rem; color: var(--abrsm-gold); margin-bottom: 0.85rem;">
-            Official Syllabus Learning Checklist:
+          <h3 style="font-size: var(--text-sm); text-transform: uppercase; letter-spacing: .08em; color: var(--color-accent); margin-bottom: var(--space-3);">
+            Official Syllabus Checklist:
           </h3>
-          <div class="checklist-grid">
-            ${data.checklist.map((item, idx) => `
-              <div class="checklist-item">
-                <span class="checklist-check">✔</span>
+          <div class="checklist-list">
+            ${data.checklist.map(item => `
+              <div class="checklist-row">
+                <span class="checklist-icon">✓</span>
                 <span>${item}</span>
               </div>
             `).join('')}
@@ -165,8 +176,8 @@ class AbrsmApp {
       `;
     }
 
-    // Auto-update stave clef buttons available for that grade
-    document.querySelectorAll('.clef-btn').forEach(btn => {
+    // Update available clefs for that grade
+    document.querySelectorAll('.clef-tab-btn').forEach(btn => {
       const clef = btn.dataset.clef;
       const isAllowed = data.clefs.includes(clef);
       btn.style.opacity = isAllowed ? '1' : '0.4';
@@ -176,7 +187,7 @@ class AbrsmApp {
 
   setClef(clef) {
     this.currentClef = clef;
-    document.querySelectorAll('.clef-btn').forEach(btn => {
+    document.querySelectorAll('.clef-tab-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.clef === clef);
     });
     if (this.stave) {
@@ -184,7 +195,6 @@ class AbrsmApp {
     }
   }
 
-  // Handle note click from Stave
   handleNoteClick(noteString) {
     if (window.soundEngine) {
       window.soundEngine.playNote(noteString, 0.6);
@@ -195,9 +205,7 @@ class AbrsmApp {
     }
   }
 
-  // Display piano key press on Stave
   displayPianoNoteOnStave(noteString) {
-    // Note format: "C4", "C#4", "Bb4"
     const match = noteString.match(/^([A-G])([#B]?)(\d+)$/);
     if (!match) return;
 
@@ -216,16 +224,20 @@ class AbrsmApp {
     if (!container || !window.ABRSM_CADENCES) return;
 
     container.innerHTML = window.ABRSM_CADENCES.map(cadence => `
-      <div class="cadence-card">
-        <h3 style="font-size: 1.3rem; color: #fff;">${cadence.name}</h3>
-        <span class="cadence-progression-badge">${cadence.progression}</span>
-        <p style="color: var(--abrsm-gold); font-size: 0.85rem; font-weight: 700;">${cadence.effect}</p>
-        <p style="color: var(--text-secondary); font-size: 0.875rem; margin: 0.5rem 0;">${cadence.description}</p>
-        
-        <strong style="font-size: 0.8rem; color: var(--text-muted);">Audition in Key:</strong>
-        <div class="cadence-key-buttons">
+      <div class="paper-card">
+        <div class="card-head">
+          <h3>${cadence.name}</h3>
+          <span class="tag">${cadence.effect}</span>
+        </div>
+        <div class="cadence-badge">${cadence.progression}</div>
+        <p style="color: var(--color-muted); font-size: var(--text-sm); margin-block: var(--space-2) var(--space-4);">
+          ${cadence.description}
+        </p>
+
+        <span style="font-size: var(--text-xs); color: var(--color-muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 700; display: block; margin-bottom: var(--space-2);">Audition in Key:</span>
+        <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
           ${Object.keys(cadence.keys).map(key => `
-            <button class="btn btn-sm btn-secondary" onclick="window.app.playCadenceAudio('${cadence.id}', '${key}')">
+            <button class="btn outline small" onclick="window.app.playCadenceAudio('${cadence.id}', '${key}')">
               ▶ Key of ${key}
             </button>
           `).join('')}
@@ -241,14 +253,13 @@ class AbrsmApp {
     const kData = cad.keys[key];
     window.soundEngine.playCadence(kData.chord1, kData.chord2);
 
-    // Highlight chords sequentially on piano
     const h1 = {};
-    kData.chord1.forEach(n => h1[n] = { color: '#6366f1', badge: cad.name1 });
+    kData.chord1.forEach(n => h1[n] = { color: '#b8432f', badge: cad.name1 });
     this.piano.setHighlights(h1);
 
     setTimeout(() => {
       const h2 = {};
-      kData.chord2.forEach(n => h2[n] = { color: '#fbbf24', badge: cad.name2 });
+      kData.chord2.forEach(n => h2[n] = { color: '#2e7d5e', badge: cad.name2 });
       this.piano.setHighlights(h2);
     }, 1200);
   }
@@ -259,15 +270,19 @@ class AbrsmApp {
     if (!container || !window.ABRSM_ORNAMENTS) return;
 
     container.innerHTML = window.ABRSM_ORNAMENTS.map(orn => `
-      <div class="ornament-card">
+      <div class="ornament-box">
         <div>
-          <div class="ornament-symbol">${orn.symbol}</div>
-          <h4 style="color: #fff; font-size: 1.1rem; margin-bottom: 0.25rem;">${orn.name}</h4>
-          <span class="glossary-grade-tag">Grade ${orn.grade}</span>
-          <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.5rem;">${orn.description}</p>
+          <div class="ornament-glyph">${orn.symbol}</div>
+          <div class="card-head">
+            <h4 style="font-size: var(--text-base);">${orn.name}</h4>
+            <span class="tag">Grade ${orn.grade}</span>
+          </div>
+          <p style="color: var(--color-muted); font-size: var(--text-xs); margin-top: var(--space-2);">
+            ${orn.description}
+          </p>
         </div>
-        <button class="btn btn-sm btn-gold" style="margin-top: 1rem;" onclick="window.soundEngine.playOrnament('${orn.id}')">
-          ▶ Play Audio Demo
+        <button class="btn outline small" style="margin-top: var(--space-4);" onclick="window.soundEngine.playOrnament('${orn.id}')">
+          ▶ Play Sound Demo
         </button>
       </div>
     `).join('');
@@ -279,10 +294,10 @@ class AbrsmApp {
     if (!container || !window.TECHNICAL_SCALE_DEGREES) return;
 
     container.innerHTML = window.TECHNICAL_SCALE_DEGREES.map(deg => `
-      <div class="degree-card">
-        <span class="degree-num">Degree ${deg.degree} (${deg.roman})</span>
-        <h4 class="degree-name">${deg.name}</h4>
-        <p class="degree-desc">${deg.role}</p>
+      <div class="paper-card" style="padding: var(--space-4);">
+        <span style="font-size: var(--text-xs); color: var(--color-accent); font-weight: 700;">Degree ${deg.degree} (${deg.roman})</span>
+        <h4 style="font-size: var(--text-base); margin-block: var(--space-1);">${deg.name}</h4>
+        <p style="color: var(--color-muted); font-size: var(--text-xs);">${deg.role}</p>
       </div>
     `).join('');
   }
@@ -293,13 +308,21 @@ class AbrsmApp {
     if (!container || !window.ORCHESTRAL_INSTRUMENTS) return;
 
     container.innerHTML = window.ORCHESTRAL_INSTRUMENTS.map(inst => `
-      <div class="instrument-card">
-        <span class="instrument-family-tag">${inst.family}</span>
-        <h4 class="instrument-title">${inst.name}</h4>
-        <p class="instrument-meta-line"><strong>Primary Clef:</strong> ${inst.clef}</p>
-        <p class="instrument-meta-line"><strong>Transposition:</strong> ${inst.transposing}</p>
-        <p class="instrument-meta-line"><strong>Sound:</strong> ${inst.sound}</p>
-        <span class="glossary-grade-tag">Grade ${inst.grade}</span>
+      <div class="paper-card">
+        <div class="card-head">
+          <span class="tag">${inst.family}</span>
+          <span style="font-size: var(--text-xs); color: var(--color-muted);">Grade ${inst.grade}</span>
+        </div>
+        <h4 style="font-size: var(--text-lg); margin-block: var(--space-2);">${inst.name}</h4>
+        <p style="font-size: var(--text-xs); color: var(--color-muted); margin-bottom: 2px;">
+          <strong>Clef:</strong> ${inst.clef}
+        </p>
+        <p style="font-size: var(--text-xs); color: var(--color-muted); margin-bottom: 2px;">
+          <strong>Transposition:</strong> ${inst.transposing}
+        </p>
+        <p style="font-size: var(--text-xs); color: var(--color-muted);">
+          <strong>Sound:</strong> ${inst.sound}
+        </p>
       </div>
     `).join('');
   }
@@ -321,10 +344,10 @@ class AbrsmApp {
 
     tbody.innerHTML = terms.map(t => `
       <tr>
-        <td class="glossary-term">${t.term}</td>
+        <td><strong>${t.term}</strong></td>
         <td>${t.translation}</td>
-        <td><span style="color: var(--text-muted); font-size: 0.8rem;">${t.category}</span></td>
-        <td><span class="glossary-grade-tag">Grade ${t.grade}</span></td>
+        <td><span style="color: var(--color-muted); font-size: var(--text-xs);">${t.category}</span></td>
+        <td><span class="tag">Grade ${t.grade}</span></td>
       </tr>
     `).join('');
   }
@@ -335,7 +358,7 @@ class AbrsmApp {
     this.renderGlossary(searchVal, gradeVal);
   }
 
-  // --- Exam Practice Trainer ---
+  // --- Exam Practice Simulator ---
   initExamTrainer() {
     const gradeSelect = document.getElementById('exam-grade-selector');
     const nextBtn = document.getElementById('exam-next-btn');
@@ -374,12 +397,12 @@ class AbrsmApp {
 
     if (optionsGrid) {
       optionsGrid.innerHTML = q.options.map(opt => `
-        <button class="exam-choice-btn" data-choice="${opt.replace(/"/g, '&quot;')}">
+        <button class="exam-choice-button" data-choice="${opt.replace(/"/g, '&quot;')}">
           ${opt}
         </button>
       `).join('');
 
-      optionsGrid.querySelectorAll('.exam-choice-btn').forEach(btn => {
+      optionsGrid.querySelectorAll('.exam-choice-button').forEach(btn => {
         btn.addEventListener('click', (e) => {
           this.handleExamAnswer(e.currentTarget.dataset.choice);
         });
@@ -399,7 +422,7 @@ class AbrsmApp {
     if (scoreEl) scoreEl.textContent = result.score;
     if (streakEl) streakEl.textContent = `${result.streak} 🔥`;
 
-    document.querySelectorAll('.exam-choice-btn').forEach(btn => {
+    document.querySelectorAll('.exam-choice-button').forEach(btn => {
       btn.disabled = true;
       if (btn.dataset.choice === result.correctAnswer) {
         btn.classList.add('correct');
@@ -411,16 +434,18 @@ class AbrsmApp {
     if (explanationBox) {
       explanationBox.style.display = 'block';
       explanationBox.innerHTML = `
-        <strong>${result.isCorrect ? '✨ Correct!' : '❌ Incorrect'}</strong>
-        <p style="margin-top: 0.35rem;">${result.explanation}</p>
+        <strong style="color: ${result.isCorrect ? 'var(--color-answer)' : 'var(--color-accent)'};">
+          ${result.isCorrect ? '✓ Correct' : '✗ Incorrect'}
+        </strong>
+        <p style="margin-top: var(--space-1);">${result.explanation}</p>
       `;
     }
 
-    if (nextBtn) nextBtn.style.display = 'inline-flex';
+    if (nextBtn) nextBtn.style.display = 'block';
   }
 }
 
-// Bootstrap on DOM ready
+// Bootstrap on DOM load
 window.addEventListener('DOMContentLoaded', () => {
   window.app = new AbrsmApp();
   window.app.init();
